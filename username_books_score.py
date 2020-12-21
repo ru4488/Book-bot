@@ -10,28 +10,13 @@ import json
 jar = requests.cookies.RequestsCookieJar()
 
 
-def get_HTML_first(url): #скачивает HTML файл 
-    global jar
-    try:    
-        print(jar)
-        result = requests.get(url , headers={'User-Agent': UserAgent().chrome} ,cookies=jar )
-        result.raise_for_status()
-        result.encoding = "utf8"
-        jar = result.cookies
-        
-        # return result.text
-        if not result.ok:
-            print([])
-        soup = BeautifulSoup(result.text, 'html.parser')
+
+def last_page(pages):
+        soup = BeautifulSoup(pages, 'html.parser')
         info= soup.find("a" , title= "Последняя страница") 
         last_page_list = info['href'].split('~')  
-        last_page = int(last_page_list[1])  
-
+        last_page = int(last_page_list[1])
         return last_page
-    except (requests.RequestException , ValueError):
-        print('сетевая ошибка')
-        return False
-
 
 # random_numb = random.randint(7 , 30) 
 # @sleep_and_retry
@@ -43,6 +28,7 @@ def get_HTML(html): #скачивает HTML файл
         result = requests.get(html , headers={'User-Agent': UserAgent().chrome}, cookies=jar)
         result.raise_for_status()
         result.encoding = "utf8"
+        jar = result.cookies
         return result.text
 
     except (requests.RequestException , ValueError):
@@ -131,12 +117,13 @@ def all_about_books(html):
 if __name__ == "__main__":
     
     url = 'https://www.livelib.ru/reader/Fari22/reviews'
-    last_page = get_HTML_first('https://www.livelib.ru/reader/Fari22/reviews~1')
-       
+    pages = get_HTML('https://www.livelib.ru/reader/Fari22/reviews~1')
+    
+    last_page = last_page(pages)  
     all_page_list = []
     for web_page in range(1 , last_page + 1):
         all_page_list.append(url + '~' + str(web_page))
- 
+    print(last_page)
  
     new_page = []
     for i in range(len(all_page_list)):
