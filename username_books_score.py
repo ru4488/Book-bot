@@ -91,19 +91,19 @@ def all_about_books(html):
 
     all_about_book_list = []
     # all_about_book_dir = {}
-    
+    a = soup.find_all('div', class_="block-border card-block expert-review")
+    print(a)
 
-
     
-    for review in soup.find_all('div', class_="block-border card-block expert-review"):
+    # for review in soup.find_all('div', class_="block-border card-block expert-review"):
  
-        info= review.find("div" , class_="group-login-date dont-author")   
-        info_list = info.text.split()
+    #     info= review.find("div" , class_="group-login-date dont-author")   
+    #     info_list = info.text.split()
         
 
-        all_about_book_list.extend(teg_book(info_list, review))
+    #     all_about_book_list.extend(teg_book(info_list, review))
 
-    return all_about_book_list
+    # return all_about_book_list
     
 
 
