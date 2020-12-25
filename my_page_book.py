@@ -15,46 +15,50 @@ def get_HTML(url):
         result = requests.get(url , headers={'User-Agent': UserAgent().chrome}, cookies=jar)
         result.encoding = "utf8"
         jar = result.cookies
+        
         return result.text
     except (requests.RequestException , ValueError):
         print('сетевая ошибка')
         return False
 
 
-    
-def parse_name_book(review):
+  # поиск названия книги  
+def parse_book_name(review):
     name_book = review.find("a" , class_="brow-book-name with-cycle").text
     return name_book
 
 
-
-def parse_author_book(review):
+# поиск автора
+def parse_book_author(review):
     author = review.find("a" , class_="brow-book-author").text
+    if author is None:
+        return None
     return author
 
-
-def parse_score_book(review): 
+# оценка пользователя
+def parse_book_score(review): 
     
     score = review.find("span" , class_="brow-rating marg-right").text
-    return score
-  
+    return float(score)
 
-    
-    
+def name_user(soup): #имя пользователя
+    name_user = soup.find('span' , class_ = 'header-profile-login').text
+    return name_user
+# создание массива из словарей    
 def parse_books(html):
     
     all_about_book_list = []
     soup = BeautifulSoup(html , 'html.parser')
+  
+    
     for review in soup.find_all("div" , class_="brow-data"):    
         all_about_book_dir = {}
         
-        name_book = parse_name_book(review)
-        author = parse_author_book(review)
-        score = parse_score_book(review)
-                
-        all_about_book_dir['title'] = name_book
-        all_about_book_dir['artist'] = author
-        all_about_book_dir['score'] = score
+        all_about_book_dir['user'] = name_user(soup)
+        all_about_book_dir['title'] = parse_book_name(review)
+        all_about_book_dir['artist']  = parse_book_author(review)
+        all_about_book_dir['score'] = parse_book_score(review)
+
 
         all_about_book_list.append(all_about_book_dir)
 #  может быть несколько одинаковых прочитаных книг (с разными оценками)
@@ -63,7 +67,17 @@ def parse_books(html):
 
    
 
-    print(all_about_book_list)
+    return all_about_book_list
+
+
+def new_page(url):
+    result = get_HTML(url)
+    soup = BeautifulSoup(result , 'html.parser')
+    
+    if soup.find('span' , id="a-list-page-next-") in soup.find_all('span', class_="pagination__page"):
+
+        return result , 0
+    return result , 1
 
 
 
@@ -75,7 +89,23 @@ def parse_books(html):
 if __name__ == "__main__":
     url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
     
+    numb = 1
+    page = 1
+    all_page = []
+    while page != 0:
+        
+        html, page = new_page(url + '~' + str(numb))
 
-    html = get_HTML(url)
-    parse_books(html)
+        all_page.extend(parse_books(html))
+        random_numb = random.randint(7 , 30) 
+        time.sleep(random_numb)
+        numb += 1
+        
+        print(url + '~' + str(numb))
+        print(len(all_page))
+        
+
+
+
+
 
