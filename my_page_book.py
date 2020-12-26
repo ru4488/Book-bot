@@ -5,22 +5,7 @@ import json
 
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
-
-
-jar = requests.cookies.RequestsCookieJar()
-
-def get_HTML(url):
-    global jar
-    try:
-        result = requests.get(url , headers={'User-Agent': UserAgent().chrome}, cookies=jar)
-        result.encoding = "utf8"
-        jar = result.cookies
-        
-        return result.text
-    except (requests.RequestException , ValueError):
-        print('сетевая ошибка')
-        return False
-
+from get_html import get_HTML
 
   # поиск названия книги  
 def parse_book_name(review):
@@ -30,43 +15,31 @@ def parse_book_name(review):
 
 # поиск автора
 def parse_book_author(review):
-    author = review.find("a" , class_="brow-book-author").text
+    author = review.find("a" , class_="brow-book-author")
     if author is None:
         return None
-    return author
-
+    return author.text
+    
 # оценка пользователя
 def parse_book_score(review): 
-    
     score = review.find("span" , class_="brow-rating marg-right").text
     return float(score)
 
-def name_user(soup): #имя пользователя
-    name_user = soup.find('span' , class_ = 'header-profile-login').text
-    return name_user
+def user_name(soup): #имя пользователя
+    return soup.find('span' , class_ = 'header-profile-login').text
+    
+
 # создание массива из словарей    
 def parse_books(html):
-    
     all_about_book_list = []
     soup = BeautifulSoup(html , 'html.parser')
-  
-    
     for review in soup.find_all("div" , class_="brow-data"):    
         all_about_book_dir = {}
-        
-        all_about_book_dir['user'] = name_user(soup)
+        all_about_book_dir['user'] = user_name(soup)
         all_about_book_dir['title'] = parse_book_name(review)
         all_about_book_dir['artist']  = parse_book_author(review)
         all_about_book_dir['score'] = parse_book_score(review)
-
-
         all_about_book_list.append(all_about_book_dir)
-#  может быть несколько одинаковых прочитаных книг (с разными оценками)
-
-
-
-   
-
     return all_about_book_list
 
 
@@ -81,19 +54,12 @@ def new_page(url):
 
 
 
-        
-
-
-
-
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
-    
+    url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'    
     numb = 1
     page = 1
     all_page = []
     while page != 0:
-        
         html, page = new_page(url + '~' + str(numb))
 
         all_page.extend(parse_books(html))
