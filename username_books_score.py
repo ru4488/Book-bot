@@ -1,11 +1,12 @@
 import requests
 import random
 import redis
+
+import time
+import json
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 from ratelimit  import *
-import time
-import json
 
 jar = requests.cookies.RequestsCookieJar()
 
@@ -91,31 +92,15 @@ def all_about_books(html):
 
     all_about_book_list = []
     # all_about_book_dir = {}
-    a = soup.find_all('div', class_="block-border card-block expert-review")
-    print(a)
+   
+    for review in soup.find_all('div', class_="block-border card-block expert-review"):
+        info= review.find("div" , class_="group-login-date dont-author")   
+        info_list = info.text.split()
+                all_about_book_list.extend(teg_book(info_list, review))
 
-    
-    # for review in soup.find_all('div', class_="block-border card-block expert-review"):
- 
-    #     info= review.find("div" , class_="group-login-date dont-author")   
-    #     info_list = info.text.split()
-        
-
-    #     all_about_book_list.extend(teg_book(info_list, review))
-
-    # return all_about_book_list
-    
-
-
-
-
-
-
-
-
+    return all_about_book_list
 
 if __name__ == "__main__":
-    
     url = 'https://www.livelib.ru/reader/Fari22/reviews'
     pages = get_HTML('https://www.livelib.ru/reader/Fari22/reviews~1')
     
@@ -129,9 +114,7 @@ if __name__ == "__main__":
     for i in range(len(all_page_list)):
         random_numb = random.randint(7 , 30) 
         html = get_HTML(all_page_list[i])   
-          
         new_page.extend(all_about_books(html))
-        
         time.sleep(random_numb)
     print(new_page)
     with open("reviews_of_all_users_books.json", "w") as write_file:
