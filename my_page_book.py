@@ -12,6 +12,15 @@ def parse_book_name(review):
     name_book = review.find("a" , class_="brow-book-name with-cycle").text
     return name_book
 
+def parse_book_id(review):
+    book_info = review.find("a" , class_="brow-book-name with-cycle")    
+    list_for_slash = (book_info['href']).split('/')
+    book_id = (list_for_slash[2]).split('-')
+    return book_id[0]
+ 
+    
+
+# <a class="brow-book-name with-cycle" href="/book/1002436430-zavodnoj-apelsin-entoni-bjordzhess" title="Энтони Бёрджесс - Заводной апельсин">Заводной апельсин</a>
 
 # поиск автора
 def parse_book_author(review):
@@ -35,12 +44,16 @@ def parse_books(html):
     soup = BeautifulSoup(html , 'html.parser')
     for review in soup.find_all("div" , class_="brow-data"):    
         all_about_book_dir = {}
+        all_about_book_dir['book_id'] = parse_book_id(review)
         all_about_book_dir['user'] = user_name(soup)
         all_about_book_dir['title'] = parse_book_name(review)
         all_about_book_dir['artist']  = parse_book_author(review)
         all_about_book_dir['score'] = parse_book_score(review)
         all_about_book_list.append(all_about_book_dir)
     return all_about_book_list
+
+
+
 
 
 def new_page(url):
@@ -68,7 +81,7 @@ if __name__ == "__main__":
         numb += 1
         
         print(url + '~' + str(numb))
-        print(len(all_page))
+        print(all_page)
         
 
 
