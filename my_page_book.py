@@ -62,18 +62,18 @@ def new_page(url):
     
     if soup.find('span' , id="a-list-page-next-") in soup.find_all('span', class_="pagination__page"):
 
-        return result , 0
-    return result , 1
+        return result , False
+    return result , True
 
 
 
 if __name__ == "__main__":
     url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'    
     numb = 1
-    page = 1
+    next_page = True
     all_page = []
-    while page != 0:
-        html, page = new_page(url + '~' + str(numb))
+    while next_page != False:
+        html, next_page = new_page(url + '~' + str(numb))
 
         all_page.extend(parse_books(html))
         random_numb = random.randint(7 , 30) 

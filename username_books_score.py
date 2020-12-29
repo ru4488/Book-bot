@@ -16,6 +16,29 @@ def last_page(pages):
         last_page = int(last_page_list[1])
         return last_page
 
+def book_title(info_list):    
+    #название книги
+    if 'автора' in info_list:
+        name_book_list = info_list[info_list.index('книгу') + 1 : info_list.index('автора')]
+    elif 'авторов' in info_list:
+        #нашел проблему на странице, есть места где нет слов "атовров/автора"
+        name_book_list = info_list[info_list.index('книгу') + 1 : info_list.index('авторов')]
+    return " ".join(name_book_list)
+
+
+def book_authors(info_list):
+    # имя автора книги
+    if 'автора' in info_list:   
+        all_about_book_dir = {}
+        name_artist_list = info_list[info_list.index('автора') + 1 :]
+        return [" ".join(name_artist_list)]
+    elif 'авторов' in info_list:
+        name_artist_list =info_list[info_list.index('авторов') + 1 :]
+        name_artist = " ".join(name_artist_list)
+        artists = name_artist.split(', ')
+        return artists
+
+              
 
 
 def teg_book(info_list, review):
@@ -63,10 +86,21 @@ def teg_book(info_list, review):
 def all_about_books(html):
     soup = BeautifulSoup(html , 'html.parser')
     all_about_book_list = []
-    for review in soup.find_all('div', class_="block-border card-block expert-review"):
-        info= review.find("div" , class_="group-login-date dont-author")   
+    for review_html in soup.find_all('div', class_="block-border card-block expert-review"):
+        info= review_html.find("div" , class_="group-login-date dont-author")   
         info_list = info.text.split()
-        all_about_book_list.extend(teg_book(info_list, review))
+        # all_about_book_list.extend(teg_book(info_list, review_html))
+        
+        artists = book_authors(info_list)
+        # reviews = []
+        for artist in artists:
+            review = {}
+            review['artist'] = artist
+            review['title'] = name_book
+            review['score'] = score
+            # reviews.append(review)
+            all_about_book_list.extend(review)
+        
     return all_about_book_list
 
 
@@ -89,6 +123,6 @@ if __name__ == "__main__":
         html = get_HTML(all_page_list[i])    
         new_page.extend(all_about_books(html))
         time.sleep(random_numb)
-    print(new_page)
+        print(new_page)
     with open("reviews_of_all_users_books.json", "w") as write_file:
         json.dump(new_page, write_file)
