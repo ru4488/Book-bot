@@ -5,8 +5,9 @@ from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 
 import    random
-from sqlalchemy import Table, create_engine,Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import Table, create_engine,Column, Integer, String, MetaData, ForeignKey,select,Float
 from    hederres_const  import  const_headerrs,  cconst_nacchalo_zagotov
+from sqlalchemy.orm import  sessionmaker
 def get_html(URL):
     try:
         response  =requests.get(URL)
@@ -72,12 +73,37 @@ def find_all_name_all_big(html,rencedent,recenzia_number):
 if __name__ =='__main__':
     i=0
     flag=True
+    engine = create_engine('sqlite://', echo=True)
+    metadata = MetaData()
+    Books_table = Table('Books_id', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('title', String)
 
+    )
+
+    Books_table.create(bind=engine)
+    Reviewer_table = Table('Reviewer_id', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('name', String)
+
+    )
+    Reviewer_table.create(bind=engine)
+
+    Scores_table = Table('Scores_id', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('reviewer_id', String,ForeignKey('Reviewer_id.name')),
+    Column('book_id', String,ForeignKey('Books_id.title')),
+    Column('score', Float)
+    )
+    Scores_table.create(bind=engine)
+
+    Session = sessionmaker(bind=engine)
+    s = Session()
     html=get_html('https://www.livelib.ru/book/1002455336/reviews#reviews')
     str_23='test'+str(i)+'.html'
 
 
-    athor_recendent=[]
+
     Reviewer_id=[]
     Scores_id=[]
     Books_id=[]
@@ -87,6 +113,7 @@ if __name__ =='__main__':
     while(flag):
         athor_recendent_nummber=[]
         Scores_buferr=[]
+        athor_recendent=[]
 
         i=i+1
         if i==1:
@@ -96,16 +123,38 @@ if __name__ =='__main__':
             buferr_book.append(athor_book)
             find_all_name_all_big(html,athor_recendent,athor_recendent_nummber)
             Books_id.append(buferr_book)
+            insert_Books = Books_table.insert().values(title=buferr_book[0])
+            engine.execute(insert_Books)
 
         else:
             find_all_name_all_big(html,athor_recendent,athor_recendent_nummber)
+        for  err  in  athor_recendent:
+            insert_Reviewer = Reviewer_table.insert().values(name=err)
+            engine.execute(insert_Reviewer)
+        for  err  in  athor_recendent_nummber:
+            insert_Scoresr = Scores_table.insert().values(score=err)
+            engine.execute(insert_Scoresr)
+        #insert_Scoresr = Scores_table.insert().values(reviewer_id=err)
+
+
         Reviewer_id.append(athor_recendent)#  Reviewer__id
+
+
         Scores_buferr.append(Reviewer_id)
         Scores_buferr.append(Books_id)
         Scores_buferr.append(athor_recendent_nummber)
         Scores_id.append(Scores_buferr)
-        print(Scores_id[i-1])
-        break
+        if  i==2:
+            meserrger1=s.query(Books_table).all()
+            print('Books_id=',meserrger1)
+            meserrger3=s.query(Reviewer_table).all()
+            print('Reviewer_id=',meserrger3)
+            meserrger=s.query(Scores_table).all()
+            print('meserrger=',meserrger)
+            #stmt = select([Reviewer_table.c.all])
+            #message2, = engine.execute(stmt).fetchone()
+            #print('message=',message2)
+            break
 
         next=find_flag_next(html)
 
