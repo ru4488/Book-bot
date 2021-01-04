@@ -5,7 +5,6 @@ from telegram.ext import Updater , CommandHandler , MessageHandler, Filters
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 def start(update, context):
-
     if 'id' not in context.user_data:
         context.user_data['id'] = update.message.chat.id
         update.message.reply_text('Привет, дорогой друг! Присылай свою страницу с прочитанными книгами с сайта https://www.livelib.ru/')

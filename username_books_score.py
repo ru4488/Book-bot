@@ -8,9 +8,9 @@ from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 from ratelimit  import *
 
-jar = requests.cookies.RequestsCookieJar()
-
-
+from fake_useragent import UserAgent
+from bs4 import BeautifulSoup
+from ratelimit  import *
 
 def last_page(pages):
         soup = BeautifulSoup(pages, 'html.parser')
@@ -19,22 +19,29 @@ def last_page(pages):
         last_page = int(last_page_list[1])
         return last_page
 
-# random_numb = random.randint(7 , 30) 
-# @sleep_and_retry
-# @limits(calls =1, period  = random_numb)
-def get_HTML(html): #скачивает HTML файл 
-    global jar
-    try:    
-        print(jar)
-        result = requests.get(html , headers={'User-Agent': UserAgent().chrome}, cookies=jar)
-        result.raise_for_status()
-        result.encoding = "utf8"
-        jar = result.cookies
-        return result.text
+def book_title(info_list):    
+    #название книги
+    if 'автора' in info_list:
+        name_book_list = info_list[info_list.index('книгу') + 1 : info_list.index('автора')]
+    elif 'авторов' in info_list:
+        #нашел проблему на странице, есть места где нет слов "атовров/автора"
+        name_book_list = info_list[info_list.index('книгу') + 1 : info_list.index('авторов')]
+    return " ".join(name_book_list)
 
-    except (requests.RequestException , ValueError):
-        print('сетевая ошибка')
-        return False
+
+def book_authors(info_list):
+    # имя автора книги
+    if 'автора' in info_list:   
+        all_about_book_dir = {}
+        name_artist_list = info_list[info_list.index('автора') + 1 :]
+        return [" ".join(name_artist_list)]
+    elif 'авторов' in info_list:
+        name_artist_list =info_list[info_list.index('авторов') + 1 :]
+        name_artist = " ".join(name_artist_list)
+        artists = name_artist.split(', ')
+        return artists
+
+              
 
 
 def teg_book(info_list, review):
@@ -42,7 +49,6 @@ def teg_book(info_list, review):
     all_about_book_dir = {}
     score_book = review.find('div' , class_="group-review-rating")
     score_list = score_book.text.split()  
-   
     score = score_list[2]
     all_about_book_dir['score'] = score
 #название книги
@@ -50,14 +56,10 @@ def teg_book(info_list, review):
         name_book_list = info_list[info_list.index('книгу') + 1 : info_list.index('автора')]
         name_book = " ".join(name_book_list)   
         all_about_book_dir['title'] = name_book
-     
-            #нашел проблему на странице, есть места где нет слов "атовров/автора"
-    elif 'авторов' in info_list: 
-            
+#нашел проблему на странице, есть места где нет слов "атовров/автора"
+    elif 'авторов' in info_list:   
         name_book_list = info_list[info_list.index('книгу') + 1 : info_list.index('авторов')]
         name_book = " ".join(name_book_list)
-            
-        #     all_about_book_dir['title'] =  name_book
 
 # имя автора книги
     if 'автора' in info_list:
@@ -65,7 +67,6 @@ def teg_book(info_list, review):
         name_artist = " ".join(name_artist_list)
         all_about_book_dir['artist'] = name_artist
             
-
     elif 'авторов' in info_list:
         name_artist_list =info_list[info_list.index('авторов') + 1 :]
         name_artist = " ".join(name_artist_list)
@@ -82,14 +83,11 @@ def teg_book(info_list, review):
     if len(all_about_book_dir) != 0: 
         all_about_book_list.append(all_about_book_dir)
         all_about_book_dir = {}
-    
     return all_about_book_list
 
     
 def all_about_books(html):
-
     soup = BeautifulSoup(html , 'html.parser')
-
     all_about_book_list = []
     # all_about_book_dir = {}
    
@@ -116,6 +114,6 @@ if __name__ == "__main__":
         html = get_HTML(all_page_list[i])   
         new_page.extend(all_about_books(html))
         time.sleep(random_numb)
-    print(new_page)
+        print(new_page)
     with open("reviews_of_all_users_books.json", "w") as write_file:
         json.dump(new_page, write_file)
