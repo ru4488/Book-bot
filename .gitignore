@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-
 settings.py
 *.log
 .vscode/
@@ -11,6 +10,8 @@ settings.py
 env/
 .DS_Store
 __pycache__/
+
+perr_files/
 
 # C extensions
 *.so

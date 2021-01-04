@@ -56,6 +56,9 @@ def parse_books(html):
 
 
 
+
+
+
 def new_page(url):
     result = get_HTML(url)
     soup = BeautifulSoup(result , 'html.parser')
