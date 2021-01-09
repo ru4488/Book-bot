@@ -95,20 +95,49 @@ if __name__ =='__main__':
         name=Column(String)
         id__livelib=Column(String)
 
+        #addresses_Book = relationship('Rreviewer', backref='Books',lazy='dynamic')
+        #addresses_Book = relationship('Books', backref='Rreviewer',lazy='dynamic')
+        #addresses_Book = relationship('Books.id', backref='Rreviewer',lazy='dynamic')
+
+
+        #user = relationship("Books", backref=backref('Authors'))
+
         def __repr__(self):
             return "<Books(name='%s')>" % self.name
 
-    class Authors(Base):
+    class Author(Base):
         __tablename__ = 'Authors'
         id = Column(Integer, primary_key=True)
         name_2=Column(String)
+        #Author_id = Column(Integer, ForeignKey('Rreviewer.id'))
+        reviews = relationship("Reviews", backref=backref('author'))
         #score=Column(Float)
-        #user_id = Column(Integer, ForeignKey('Books.id'))
+        #addresses_Author = relationship('Authors', backref='Rreviewer',lazy='dynamic')
+        #addresses_Author = relationship('Authors.id', backref='Rreviewer',lazy='dynamic')
+
         #user = relationship("Books", backref=backref('Authors'))
 
         def __repr__(self):
             return "<Authors(name='%s'  ')>"  %  (self.name_2)
 
+    class Review(Base):
+        __tablename__ = 'Reviews'
+        id = Column(Integer, primary_key=True)
+        score=Column(Float)
+        #category_id = Column(Integer, ForeignKey('Authors.id'), primary_key=True)
+        #company = relationship('Authors')
+
+        author = Column(Integer, ForeignKey('Authors.id'))
+        #user_Books = Column(Integer, ForeignKey('Books.id'))
+
+        #addresses_Book = relationship('Books', backref='Rreviewer',lazy='dynamic')
+
+
+
+        def __repr__(self):
+            return "<(score='%s'  ')>"  %  (self.score)
+
+        #name_2=Column(String)
 
     # Create all tables by issuing CREATE TABLE commands to the DB.
     Base.metadata.create_all(engine)
@@ -130,19 +159,25 @@ if __name__ =='__main__':
             name_book,id__livelib2 =find_all_name(html)
             buferr_book.append(name_book)
             #buferr_book.append(athor_book)
-            athor_recendent,athor_recendent_nummber= find_all_name_all_big(html)
+            athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
             book__namerr=str(buferr_book[0])
             ed_user=Books(name=book__namerr,id__livelib=id__livelib2)
             session.add(ed_user)
             for athor in  athor_recendent:
                 ath=Authors(name_2=athor)
                 session.add(ath)
+            for athor__nnumbber in  athor_recendent_nummbers:
+                ath=Review(score=athor__nnumbber)
+                session.add(ath)
+
         else:
             athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
             for  athor  in  athor_recendent:
                 ath=Authors(name_2=athor)
                 session.add(ath)
-
+            for athor__nnumbber in  athor_recendent_nummbers:
+                ath=Review(score=athor__nnumbber)
+                session.add(ath)
 
         next=find_flag_next(html)
 
