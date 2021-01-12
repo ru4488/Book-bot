@@ -4,7 +4,7 @@ from db import Base, engine
 class Books(Base):
     __tablename__ = 'books'
     id = Column(Integer, primary_key=True)
-    book_name = Column(String , unique=True)
+    book_name = Column(String)
     book_livelib_id = Column(String , unique=True)
     book_author =  Column(String)
 
