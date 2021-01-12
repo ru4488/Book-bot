@@ -21,7 +21,7 @@ def get_html(URL):
         rq  = requests.post(URL , cookies=jar,headers=headerss)
         rq.encoding = 'utf-8'
 
-        time.sleep(random.randint(1, 30))
+        time.sleep(random.randint(7, 30))
         return  rq.text
     except(requests.RequestException,ValueError):
         return False
@@ -83,36 +83,51 @@ if __name__ =='__main__':
     flag=True
     engine = create_engine('sqlite:///db_bd_bbook_athor.sqlite', echo=True)
     Base = declarative_base()
-    Base.metadata.create_all(engine)
+    #Base.metadata.create_all(engine)
 
     #html=get_html('https://www.livelib.ru/book/1002455336/reviews#reviews')
     html=get_html('https://www.livelib.ru/book/1005455629#reviews')
     str_23='test'+str(i)+'.html'
-
-    class Books(Base):
-        __tablename__ = 'Books'
-        id = Column(Integer, primary_key=True)
-        name=Column(String)
+    class Book(Base):
+        __tablename__ = "books"
+        id = Column(Integer,primary_key=True)
+        name = Column(String)
         id__livelib=Column(String)
 
         def __repr__(self):
             return "<Books(name='%s')>" % self.name
+        #segment = Column(String)
+        #service = relationship("Service")
 
-    class Authors(Base):
-        __tablename__ = 'Authors'
-        id = Column(Integer, primary_key=True)
-        name_2=Column(String)
-        #score=Column(Float)
-        #user_id = Column(Integer, ForeignKey('Books.id'))
-        #user = relationship("Books", backref=backref('Authors'))
-
+    class Author(Base):
+        __tablename__ = 'authors'
+        id = Column(Integer,primary_key=True)
+        name_2 = Column(String)
+        service = relationship("Review")
+        #reviews = Column(String)
+        #image = Column(String)
         def __repr__(self):
             return "<Authors(name='%s'  ')>"  %  (self.name_2)
 
 
+    class Review(Base):
+        __tablename__ = 'reviews'
+        id = Column(Integer,primary_key=True)
+        score=Column(Float)
+        books_id = Column(Integer,ForeignKey("books.id"))
+        authors_id = Column(Integer,ForeignKey("authors.id"))
+
+        books = relationship("Book")
+        authors = relationship("Author")
+        def __repr__(self):
+            return "<(score='%s'  ')>"  %  (self.score)
+
+
+
     # Create all tables by issuing CREATE TABLE commands to the DB.
     Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker()
+    Session.configure(bind=engine)
     session = Session()
 
     Reviewer_id=[]
@@ -130,24 +145,48 @@ if __name__ =='__main__':
             name_book,id__livelib2 =find_all_name(html)
             buferr_book.append(name_book)
             #buferr_book.append(athor_book)
-            athor_recendent,athor_recendent_nummber= find_all_name_all_big(html)
+            athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
             book__namerr=str(buferr_book[0])
-            ed_user=Books(name=book__namerr,id__livelib=id__livelib2)
+            ed_user=Book(name=book__namerr,id__livelib=id__livelib2)
             session.add(ed_user)
-            for athor in  athor_recendent:
-                ath=Authors(name_2=athor)
+            #iterator_po_author=0
+            for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+                ath=Author(name_2=athor)
+                #nummb=athor_recendent_nummbers[iterator_po_author]
+                s = Review(score=nummb)
+                ath.service.append(s)
+                s.books=ed_user
+                session.add(s)
                 session.add(ath)
+                #iterator_po_author=iterator_po_author+1
+
+                #ath=Author(name_2=athor)
+                #session.add(ath)
+            #for athor__nnumbber in  athor_recendent_nummbers:
+                #ath=Review(score=athor__nnumbber)
+                #session.add(ath)
+
         else:
             athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
-            for  athor  in  athor_recendent:
-                ath=Authors(name_2=athor)
+            for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+                ath=Author(name_2=athor)
+                #nummb=athor_recendent_nummbers[iterator_po_author]
+                s = Review(score=nummb)
+                ath.service.append(s)
+                s.books=ed_user
+                session.add(s)
                 session.add(ath)
-
+            #for  athor  in  athor_recendent:
+                #ath=Author(name_2=athor)
+                #session.add(ath)
+            #for athor__nnumbber in  athor_recendent_nummbers:
+                #ath=Review(score=athor__nnumbber)
+                #session.add(ath)
 
         next=find_flag_next(html)
 
         if  next=='':
-            session.add(ed_user)
+            #session.add(ed_user)
             session.commit()
             break
 
