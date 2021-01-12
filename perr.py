@@ -5,13 +5,10 @@ from fake_useragent import UserAgent
 from    hederres_const  import  const_headerrs,  cconst_nacchalo_zagotov
 from bs4 import BeautifulSoup
 #from moduls__db  import get_bd__books, get_bd__Authors
-# from sqlalchemy import Column, Integer, String, ForeignKey, create_engine,Float
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm import relationship, backref, sessionmaker, joinedload
-from model_tables import db
-import settings
-import random
-
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine,Float
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, backref, sessionmaker, joinedload
+import    random
 
 def get_html(URL):
     try:
@@ -55,7 +52,7 @@ def find_all_name(html):# нацтти  основную  информацию  
          tetle=name_tag.text
          athor_names.append(tetle)
 
-    return name_book_tag , namber_id__livilebb
+    return name_book_tag,namber_id__livilebb
 
 
 def find_all_name_all_big(html):
@@ -75,44 +72,29 @@ def find_all_name_all_big(html):
 
         tetle3=float(str(recen__iter.get_text).split()[6])
         recenzia_numbers.append((tetle3))
-    return  recendents  ,  recenzia_numbers
+    return  recendents  
+    # ,  recenzia_numbers
 
 
+def users_perr(a):
+    html=get_html(a)
+    return find_all_name_all_big(html)
 
 
 
 if __name__ =='__main__':
     i=0
-    # flag=True
+    flag=True
     # engine = create_engine('sqlite:///db_bd_bbook_athor.sqlite', echo=True)
     # Base = declarative_base()
     # Base.metadata.create_all(engine)
 
     #html=get_html('https://www.livelib.ru/book/1002455336/reviews#reviews')
-    html=get_html('https://www.livelib.ru/book/1005455629#reviews')
-    str_23='test'+str(i)+'.html'
-    print(find_all_name(html))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    # html=get_html('https://www.livelib.ru/book/1005455629#reviews')
+    # str_23 = 'test'+str(i)+'.html'
+    users_perr(a)
+    
 
     # class Book(Base):
     #     __tablename__ = 'Books'
@@ -163,10 +145,10 @@ if __name__ =='__main__':
     #         #buferr_book.append(athor_book)
     #         athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
     #         book__namerr=str(buferr_book[0])
-    #         ed_user=Book(name = book__namerr , id__livelib = id__livelib2)
+    #         ed_user=Book(name=book__namerr,id__livelib=id__livelib2)
     #         session.add(ed_user)
     #         for athor in  athor_recendent:
-    #             ath = Authors(name_2=athor)
+    #             ath=Authors(name_2=athor)
     #             session.add(ath)
     #         for athor__nnumbber in  athor_recendent_nummbers:
     #             ath=Review(score=athor__nnumbber)
