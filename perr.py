@@ -5,9 +5,10 @@ from fake_useragent import UserAgent
 from    hederres_const  import  const_headerrs,  cconst_nacchalo_zagotov
 from bs4 import BeautifulSoup
 #from moduls__db  import get_bd__books, get_bd__Authors
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine,Float
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine,Float,DECIMAL
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref, sessionmaker, joinedload
+from sqlalchemy.orm.exc import NoResultFound
 import    random
 
 def get_html(URL):
@@ -70,7 +71,7 @@ def find_all_name_all_big(html):
 
     for recen__iter in recendent_numbers:
 
-        tetle3=float(str(recen__iter.get_text).split()[6])
+        tetle3=(str(recen__iter.get_text).split()[6])
         recenzia_numbers.append((tetle3))
     return  recendents  ,  recenzia_numbers
 
@@ -92,7 +93,7 @@ if __name__ =='__main__':
         __tablename__ = "books"
         id = Column(Integer,primary_key=True)
         name = Column(String)
-        id__livelib=Column(String)
+        id__livelib=Column(String, unique=True)
 
         def __repr__(self):
             return "<Books(name='%s')>" % self.name
@@ -104,8 +105,7 @@ if __name__ =='__main__':
         id = Column(Integer,primary_key=True)
         name_2 = Column(String)
         service = relationship("Review")
-        #reviews = Column(String)
-        #image = Column(String)
+
         def __repr__(self):
             return "<Authors(name='%s'  ')>"  %  (self.name_2)
 
@@ -113,7 +113,7 @@ if __name__ =='__main__':
     class Review(Base):
         __tablename__ = 'reviews'
         id = Column(Integer,primary_key=True)
-        score=Column(Float)
+        score=Column(DECIMAL)
         books_id = Column(Integer,ForeignKey("books.id"))
         authors_id = Column(Integer,ForeignKey("authors.id"))
 
@@ -144,49 +144,40 @@ if __name__ =='__main__':
             buferr_book=[]
             name_book,id__livelib2 =find_all_name(html)
             buferr_book.append(name_book)
-            #buferr_book.append(athor_book)
+
             athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
             book__namerr=str(buferr_book[0])
+
             ed_user=Book(name=book__namerr,id__livelib=id__livelib2)
             session.add(ed_user)
-            #iterator_po_author=0
+
             for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+
                 ath=Author(name_2=athor)
-                #nummb=athor_recendent_nummbers[iterator_po_author]
-                s = Review(score=nummb)
+
+                s = Review(score=(nummb))
                 ath.service.append(s)
                 s.books=ed_user
                 session.add(s)
                 session.add(ath)
-                #iterator_po_author=iterator_po_author+1
 
-                #ath=Author(name_2=athor)
-                #session.add(ath)
-            #for athor__nnumbber in  athor_recendent_nummbers:
-                #ath=Review(score=athor__nnumbber)
-                #session.add(ath)
 
         else:
             athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
             for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
                 ath=Author(name_2=athor)
-                #nummb=athor_recendent_nummbers[iterator_po_author]
-                s = Review(score=nummb)
+
+                s = Review(score=(nummb))
                 ath.service.append(s)
                 s.books=ed_user
                 session.add(s)
                 session.add(ath)
-            #for  athor  in  athor_recendent:
-                #ath=Author(name_2=athor)
-                #session.add(ath)
-            #for athor__nnumbber in  athor_recendent_nummbers:
-                #ath=Review(score=athor__nnumbber)
-                #session.add(ath)
+
 
         next=find_flag_next(html)
 
         if  next=='':
-            #session.add(ed_user)
+
             session.commit()
             break
 
