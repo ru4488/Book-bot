@@ -13,7 +13,7 @@ def start(update, context):
 
 def user_name_livelib(update, context):
     user_page = (update.message.text).split('/')
-    ((2 + (3*5)) -4)
+
     if "www.livelib.ru" in user_page:
         if ('https:' in user_page) and ('reader' in user_page):
             context.user_data['user_name'] = user_page[4]
