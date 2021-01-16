@@ -1,54 +1,42 @@
 from db import db_session
-from models import Users , Reviews , Books
+from models import Users, Reviews, Books
 from my_page_book import all_page_info
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm.exc import NoResultFound
 
 
-all_info = all_page_info('https://www.livelib.ru/reader/LushbaughPizzicato/read')
-for user_for_the_table in range(len(all_info)):
-    
-    new_score = all_info[user_for_the_table]['score']
-    new_user = all_info[user_for_the_table]['user']
-    new_book_name = all_info[user_for_the_table]['title']
-    new_livelib_id = all_info[user_for_the_table]['book_id']
-    new_book_author = all_info[user_for_the_table]['artist']
+def store_books(all_info):
+    for row in all_info:
+        if not Books.query.filter(Books.book_livelib_id == row['book_id']).first():    
+            user = get_or_create_user(row['user'])
 
-    review = Reviews(score = new_score)
-    add_books = Books(book_name = new_book_name , book_livelib_id = new_livelib_id , book_author = new_book_author) 
-    add_user = Users(user_name = new_user)
-   
- 
-    try:
-        Users.query.filter(Users.user_name == new_user).one()
-        old_user = Users.query.filter(Users.user_name == new_user).one()
-    except NoResultFound:
-        db_session.add(add_user)
-   
- 
-    try:
-        Books.query.filter(Books.book_livelib_id == new_livelib_id).one()
-    except NoResultFound:
-        add_books.book_for_reviews.append(review) 
+            book = Books(
+                book_name=row['title'],
+                book_livelib_id=row['book_id'],
+                book_author=row['artist']
+            )
+            db_session.add(book)
+            db_session.commit()
 
-        old_user.user_for_reviews.append(review)
-        db_session.add(review)
-     
-        db_session.add(add_books)
+            review = Reviews(
+                user_id=user.id,
+                score=row['score'],
+                book_id=book.id
+            )
+
+            db_session.add(review)
+            db_session.commit()
         
-        
-    db_session.commit()
-    
 
-    
-    # new_book_name
-
-
-    # db_session.add(review)
-    # db_session.commit()
-          
+def get_or_create_user(username):
+    user = Users.query.filter(Users.user_name == username).first()
+    if not user:
+        user = Users(user_name = username)
+        db_session.add(user)
+        db_session.commit()
+    return user
 
 
-
-
-
+if __name__ == "__main__":
+    all_info = all_page_info('https://www.livelib.ru/reader/kupreeva74/read')
+    store_books(all_info)
