@@ -1,5 +1,5 @@
 from db import db_session
-from models import Users, Reviews, Books
+from models import User, Review, Book
 from my_page_book import all_page_info
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm.exc import NoResultFound
