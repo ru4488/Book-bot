@@ -18,9 +18,6 @@ def parse_book_id(review):
     book_id = (list_for_slash[2]).split('-')
     return book_id[0]
  
-    
-
-# <a class="brow-book-name with-cycle" href="/book/1002436430-zavodnoj-apelsin-entoni-bjordzhess" title="Энтони Бёрджесс - Заводной апельсин">Заводной апельсин</a>
 
 # поиск автора
 def parse_book_author(review):
@@ -32,7 +29,7 @@ def parse_book_author(review):
 # оценка пользователя
 def parse_book_score(review): 
     score = review.find("span" , class_="brow-rating marg-right").text
-    return float(score)
+    return str(score)
 
 def user_name(soup): #имя пользователя
     return soup.find('span' , class_ = 'header-profile-login').text
@@ -54,11 +51,6 @@ def parse_books(html):
 
 
 
-
-
-
-
-
 def new_page(url):
     result = get_HTML(url)
     soup = BeautifulSoup(result , 'html.parser')
@@ -68,10 +60,7 @@ def new_page(url):
         return result , False
     return result , True
 
-
-
-if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'    
+def all_page_info(url):
     numb = 1
     next_page = True
     all_page = []
@@ -81,10 +70,14 @@ if __name__ == "__main__":
         all_page.extend(parse_books(html))
         random_numb = random.randint(7 , 30) 
         time.sleep(random_numb)
-        numb += 1
+        numb += 1  
+    return all_page
+if __name__ == "__main__":
+    # url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'    
+
+    all_page_info(url)
         
-        print(url + '~' + str(numb))
-        print(all_page)
+
         
 
 
