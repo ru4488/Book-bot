@@ -4,14 +4,8 @@ import time
 from fake_useragent import UserAgent
 from    hederres_const  import  const_headerrs,  cconst_nacchalo_zagotov
 from bs4 import BeautifulSoup
-#from moduls__db  import get_bd__books, get_bd__Authors
 
-#from sqlalchemy import Column, Integer, String, ForeignKey, create_engine,Float,DECIMAL
-#from sqlalchemy.ext.declarative import declarative_base
-#from sqlalchemy.orm import relationship, backref, sessionmaker, joinedload
-#from sqlalchemy.orm.exc import NoResultFound
 from  models  import  Book,Author,Review,session,NoResultFound,IntegrityError
-#from db import
 
 import    random
 
@@ -151,52 +145,62 @@ def  funncct_get(name_book,id__livelib,name_2,score):
     session.commit()
 
 
+#def  func_add_bc(id_name):  #
 if __name__ =='__main__':
     i=0
     flag=True
+    #ferr=[1005455629,]
+    #strig_bbufer='https://www.livelib.ru/book/'+str(id_name)+'#reviews'
+    strringerr=['https://www.livelib.ru/book/1005455629#reviews','https://www.livelib.ru/book/1002953903#reviews']
 
-    html=get_html('https://www.livelib.ru/book/1005455629#reviews')
-    str_23='test'+str(i)+'.html'
+
+    for buferr_adres__html  in  strringerr:
+        #i=0
+        i=0
+        flag=True
+        html=get_html(buferr_adres__html)
 
 
-
-    Reviewer_id=[]
-    Scores_id=[]
-    Books_id=[]
-
-    while(flag):
-        athor_recendent_nummber=[]
-        Scores_buferr=[]
-        athor_recendent=[]
-
-        i=i+1
-        if i==1:
-            buferr_book=[]
-            name_book,id__livelib2 =find_all_name(html)
-            buferr_book.append(name_book)
-
-            athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
-            book__namerr=str(buferr_book[0])
+        Reviewer_id=[]
+        Scores_id=[]
+        Books_id=[]
 
 
 
-            for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
-                funncct_get(book__namerr , id__livelib2 ,  athor ,  nummb)
+        while(flag):
+            athor_recendent_nummber=[]
+            Scores_buferr=[]
+            athor_recendent=[]
+
+            i=i+1
+            if i==1:
+                buferr_book=[]
+                name_book,id__livelib2 =find_all_name(html)
+                buferr_book.append(name_book)
+
+                athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
+                book__namerr=str(buferr_book[0])
 
 
-        else:
-            athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
-            for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
-                funncct_get(book__namerr , id__livelib2 ,  athor ,  nummb)
+
+                for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+                    funncct_get(book__namerr , id__livelib2 ,  athor ,  nummb)
 
 
 
-        next=find_flag_next(html)
+            else:
+                athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
+                for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+                    funncct_get(book__namerr , id__livelib2 ,  athor ,  nummb)
 
-        if  next=='':
 
-            session.commit()
-            break
 
-        bufer_nachalo_poisk=cconst_nacchalo_zagotov+str(next)
-        html=get_html(bufer_nachalo_poisk)
+            next=find_flag_next(html)
+
+            if  next=='':
+
+                session.commit()
+                break
+
+            bufer_nachalo_poisk=cconst_nacchalo_zagotov+str(next)
+            html=get_html(bufer_nachalo_poisk)
