@@ -54,11 +54,9 @@ def parse_books(html):
 def new_page(url):
     result = get_HTML(url)
     soup = BeautifulSoup(result , 'html.parser')
-    
-    if soup.find('span' , id="a-list-page-next-") in soup.find_all('span', class_="pagination__page"):
-
-        return result , False
-    return result , True
+    if soup.find('div' ,  class_ = "with-pad") == True:
+        return result , True
+    return result , False 
 
 def all_page_info(url):
     numb = 1
@@ -71,10 +69,10 @@ def all_page_info(url):
         random_numb = random.randint(7 , 30) 
         time.sleep(random_numb)
         numb += 1  
-    return all_page
+    return  all_page
 if __name__ == "__main__":
     # url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'    
-
+    # url = "https://www.livelib.ru/reader/VartanPopov/read"
     all_page_info(url)
         
 
