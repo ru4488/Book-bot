@@ -8,7 +8,7 @@ class Book(Base):
     name = Column(String)
     livelib_id = Column(String , unique=True)
     author =  Column(String)
-    reviews = relationship("Review")
+    reviews = relationship("Review", backref="reviews")
 
     def __repr__(self):
         return f'<Book {self.book_name} {self.book_livelib_id} {self.book_author}>'
@@ -17,7 +17,7 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer , primary_key=True)
     name = Column(String , unique=True )
-    review = relationship("Review")
+    review = relationship("Review" , backref="reviews")
 
     def __repr__(self):
         return f'<User {self.user_name}>'
@@ -27,8 +27,8 @@ class Review(Base):
     __tablename__ = 'reviews'
     id = Column(Integer, primary_key=True)
     book_id = Column(Integer , ForeignKey('books.id'))
-    user = relationship("User")
-    book = relationship("Book")
+    user = relationship("User" , backref="users" )
+    book = relationship("Book" , backref="books")
     score = Column(DECIMAL)
     user_id = Column(Integer , ForeignKey('users.id'))
     
