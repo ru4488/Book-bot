@@ -38,5 +38,6 @@ def get_or_create_user(username):
 
 
 if __name__ == "__main__":
-    all_info = all_page_info('https://www.livelib.ru/reader/Skywawe/read')
+    url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
+    all_info = all_page_info(url)
     store_books(all_info)
