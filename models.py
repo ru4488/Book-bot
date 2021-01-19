@@ -20,7 +20,7 @@ class User(Base):
     review = relationship("Review" , backref="users")
 
     def __repr__(self):
-        return f'<User {self.user_name}>'
+        return f'<User {self.name}>'
 
         
 class Review(Base):

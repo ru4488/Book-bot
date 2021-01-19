@@ -54,9 +54,9 @@ def parse_books(html):
 def new_page(url):
     result = get_HTML(url)
     soup = BeautifulSoup(result , 'html.parser')
-    if soup.find('div' ,  class_ = "with-pad") == True:
-        return result , True
-    return result , False 
+    if soup.find('div' ,  class_ = "with-pad") != None:
+        return result , False 
+    return result , True
 
 def all_page_info(url):
     numb = 1
@@ -70,6 +70,7 @@ def all_page_info(url):
         time.sleep(random_numb)
         numb += 1  
     return  all_page
+
 if __name__ == "__main__":
     # url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'    
     # url = "https://www.livelib.ru/reader/VartanPopov/read"
