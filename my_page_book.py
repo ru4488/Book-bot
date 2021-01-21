@@ -78,7 +78,7 @@ def all_page_info(url):
         random_numb = random.randint(40 , 45)
         time.sleep(random_numb)
         numb += 1
-        #break
+        break
     return all_page
 if __name__ == "__main__":
     # url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
