@@ -5,14 +5,9 @@ from fake_useragent import UserAgent
 from    hederres_const  import  const_headerrs,  cconst_nacchalo_zagotov
 from bs4 import BeautifulSoup
 #from moduls__db  import get_bd__books, get_bd__Authors
-
-#from sqlalchemy import Column, Integer, String, ForeignKey, create_engine,Float,DECIMAL
-#from sqlalchemy.ext.declarative import declarative_base
-#from sqlalchemy.orm import relationship, backref, sessionmaker, joinedload
-#from sqlalchemy.orm.exc import NoResultFound
-from  models  import  Book,Author,Review,session
-#from db import
-
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine,Float
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, backref, sessionmaker, joinedload
 import    random
 
 def get_html(URL):
@@ -26,7 +21,7 @@ def get_html(URL):
         rq  = requests.post(URL , cookies=jar,headers=headerss)
         rq.encoding = 'utf-8'
 
-        time.sleep(random.randint(7, 30))
+        time.sleep(random.randint(1, 30))
         return  rq.text
     except(requests.RequestException,ValueError):
         return False
@@ -75,114 +70,105 @@ def find_all_name_all_big(html):
 
     for recen__iter in recendent_numbers:
 
-        tetle3=(str(recen__iter.get_text).split()[6])
+        tetle3=float(str(recen__iter.get_text).split()[6])
         recenzia_numbers.append((tetle3))
-    return  recendents  ,  recenzia_numbers
+    return  recendents  
+    # ,  recenzia_numbers
 
 
+def users_perr(a):
+    html=get_html(a)
+    return find_all_name_all_big(html)
 
 
 
 if __name__ =='__main__':
     i=0
     flag=True
-    #engine = create_engine('sqlite:///db_bd_bbook_athor.sqlite', echo=True)
-    #Base = declarative_base()
-    #Base.metadata.create_all(engine)
+    # engine = create_engine('sqlite:///db_bd_bbook_athor.sqlite', echo=True)
+    # Base = declarative_base()
+    # Base.metadata.create_all(engine)
 
     #html=get_html('https://www.livelib.ru/book/1002455336/reviews#reviews')
-    html=get_html('https://www.livelib.ru/book/1005455629#reviews')
-    str_23='test'+str(i)+'.html'
+    
+    # html=get_html('https://www.livelib.ru/book/1005455629#reviews')
+    # str_23 = 'test'+str(i)+'.html'
+    users_perr(a)
+    
 
-    #class Book(Base):
-        #__tablename__ = "books"
-        #id = Column(Integer,primary_key=True)
-        #name = Column(String)
-        #id__livelib=Column(String, unique=True)
+    # class Book(Base):
+    #     __tablename__ = 'Books'
+    #     id = Column(Integer, primary_key=True)
+    #     name = Column(String)
+    #     id__livelib=Column(String)
+    #     #user = relationship("Books", backref=backref('Authors'))
+    #     def __repr__(self):
+    #         return "<Book(name='%s')>" % self.name
 
-        #def __repr__(self):
-            #return "<Books(name='%s')>" % self.name
+    # class Author(Base):
+    #     __tablename__ = 'Authors'
+    #     id = Column(Integer, primary_key=True)
+    #     name_2=Column(String)
+    #     reviews = relationship("Review", backref=backref('author'))
+    #     def __repr__(self):
+    #         return "<Authors(name='%s'  ')>"  %  (self.name_2)
 
-    #class Author(Base):
-        #__tablename__ = 'authors'
-        #id = Column(Integer,primary_key=True)
-        #name_2 = Column(String)
-        #service = relationship("Review")
+    # class Review(Base):
+    #     __tablename__ = 'Reviews'
+    #     id = Column(Integer, primary_key=True)
+    #     score=Column(Float)
+    #     author_id = Column(Integer, ForeignKey('Authors.id'))
+    #     def __repr__(self):
+    #         return "<(score='%s'  ')>"  %  (self.score)
 
-        #def __repr__(self):
-            #return "<Authors(name='%s'  ')>"  %  (self.name_2)
+    #     #name_2=Column(String)
 
+    # # Create all tables by issuing CREATE TABLE commands to the DB.
+    # Base.metadata.create_all(engine)
+    # Session = sessionmaker(bind=engine)
+    # session = Session()
 
-    #class Review(Base):
-        #__tablename__ = 'reviews'
-        #id = Column(Integer,primary_key=True)
-        #score=Column(DECIMAL)
-        #books_id = Column(Integer,ForeignKey("books.id"))
-        #authors_id = Column(Integer,ForeignKey("authors.id"))
+    # Reviewer_id=[]
+    # Scores_id=[]
+    # Books_id=[]
 
-        #books = relationship("Book")
-        #authors = relationship("Author")
-        #def __repr__(self):
-            #return "<(score='%s'  ')>"  %  (self.score)
+    # while(flag):
+    #     athor_recendent_nummber=[]
+    #     Scores_buferr=[]
+    #     athor_recendent=[]
 
+    #     i=i+1
+    #     if i==1:
+    #         buferr_book=[]
+    #         name_book,id__livelib2 =find_all_name(html)
+    #         buferr_book.append(name_book)
+    #         #buferr_book.append(athor_book)
+    #         athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
+    #         book__namerr=str(buferr_book[0])
+    #         ed_user=Book(name=book__namerr,id__livelib=id__livelib2)
+    #         session.add(ed_user)
+    #         for athor in  athor_recendent:
+    #             ath=Authors(name_2=athor)
+    #             session.add(ath)
+    #         for athor__nnumbber in  athor_recendent_nummbers:
+    #             ath=Review(score=athor__nnumbber)
+    #             session.add(ath)
 
+    #     else:
+    #         athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
+    #         for  athor  in  athor_recendent:
+    #             ath=Authors(name_2=athor)
+    #             session.add(ath)
+    #         for athor__nnumbber in  athor_recendent_nummbers:
+    #             ath=Review(score=athor__nnumbber)
+    #             session.add(ath)
 
-    # Create all tables by issuing CREATE TABLE commands to the DB.
-    #Base.metadata.create_all(engine)
-    #Session = sessionmaker()
-    #Session.configure(bind=engine)
-    #session = Session()
+    #     next=find_flag_next(html)
 
-    Reviewer_id=[]
-    Scores_id=[]
-    Books_id=[]
+    #     if  next=='':
+    #         session.add(ed_user)
+    #         session.commit()
+    #         break
 
-    while(flag):
-        athor_recendent_nummber=[]
-        Scores_buferr=[]
-        athor_recendent=[]
-
-        i=i+1
-        if i==1:
-            buferr_book=[]
-            name_book,id__livelib2 =find_all_name(html)
-            buferr_book.append(name_book)
-
-            athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
-            book__namerr=str(buferr_book[0])
-
-            ed_user=Book(name=book__namerr,id__livelib=id__livelib2)
-            session.add(ed_user)
-
-            for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
-
-                ath=Author(name_2=athor)
-
-                s = Review(score=(nummb))
-                ath.service.append(s)
-                s.books=ed_user
-                session.add(s)
-                session.add(ath)
-
-
-        else:
-            athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
-            for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
-                ath=Author(name_2=athor)
-
-                s = Review(score=(nummb))
-                ath.service.append(s)
-                s.books=ed_user
-                session.add(s)
-                session.add(ath)
-
-
-        next=find_flag_next(html)
-
-        if  next=='':
-
-            session.commit()
-            break
-
-        bufer_nachalo_poisk=cconst_nacchalo_zagotov+str(next)
-        html=get_html(bufer_nachalo_poisk)
+    #     bufer_nachalo_poisk=cconst_nacchalo_zagotov+str(next)
+    #     html=get_html(bufer_nachalo_poisk)

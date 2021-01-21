@@ -3,6 +3,17 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+perr_files/
+settings.py
+*.log
+.vscode/
+.idea/
+env/
+.DS_Store
+__pycache__/
+
+perr_files/
+
 # C extensions
 *.so
 *.html*
