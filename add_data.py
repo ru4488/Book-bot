@@ -45,7 +45,7 @@ def create_or_not_review(book , user , row):
 
 
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/livjuly/read'
+    url = 'https://www.livelib.ru/reader/kira_katz/read'
     all_info = all_page_info(url)
     store_books(all_info)
 # 
@@ -54,3 +54,4 @@ if __name__ == "__main__":
 "https://www.livelib.ru/reader/VartanPopov/read"
 
 'https://www.livelib.ru/reader/kira_katz/read'
+

@@ -34,7 +34,7 @@ class Review(Base):
     
     
     def __repr__(self):
-        return f'<Book review {self.book_id} {self.score} {self.user_id} >'
+        return f'<Book review {self.book_id} {self.score} {self.user} >'
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)

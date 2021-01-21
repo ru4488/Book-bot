@@ -1,32 +1,38 @@
 from models import User, Review, Book
+from sqlalchemy import and_
+
+books_dir = {}
+books_list = []
+my_name = User.query.filter(User.name == "LushbaughPizzicato").first() 
+my_book = Review.query.filter(Review.user_id == my_name.id)
+for row in my_book:
+    all_score = Review.query.filter(and_(Review.score == row.score , Review.book_id == row.book_id , Review.user_id != my_name.id))
+    books_dir = {}
+    for i in all_score:
+       
+        books_dir[i.book_id] = i.user_id
+        books_list.append(books_dir)
+print(books_list)
+    
 
 
-"Список оценок книги под Book.id 759 "
-users_with_same_score = []
-user_with_same_score = {}
-all_score = []
-all_users = []
-result = Review.query.filter(Review.book_id.in_([759]))
-for row in result:
-    # print(row.score)
-    if row.score not in all_score:
-        all_score.append(row.score)
-        user_with_same_score[row.score] = "" 
+# for row in my_book:
 
 
-''' список авторов через оценки '''
-for row in result:   
-    if row.score in all_score:
-        all_users.append(row.user.name)        
-print(all_users)
+# # my_book =  Book.query.filter(Book.livelib_id  == '1000330921').first()
+#     # print(row.book_id)
+#     # about_my_book = Review.query.filter(and_(Review.book_id == row.book_id , Review.user_id == my_name.id)).first()
+#     # print(about_my_book)
+    
+#     users_read_my_book = Review.query.filter(and_(Review.book_id == row.book_id , Review.score == row.score , Review.user_id != my_name.id))
+#     new_book = row.book_id
+#     for i in users_read_my_book:
+#         books_dir[new_book] = i
+#         books_list.append(books_dir)
 
-"словарь пользователи поставившие одинаковую оценку"
-for row in result: 
-    user_with_same_score = {}
-    user_with_same_score[row.score] = row.user.name
-    users_with_same_score.append(user_with_same_score)
-
-print(users_with_same_score)
+#     # print(users_read_my_book)
+#     # users_read_my_book
+# print(books_list)
 
 
 

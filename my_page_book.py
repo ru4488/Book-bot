@@ -51,7 +51,7 @@ def parse_books(html):
 
 
 
-def new_page(url):
+def have_information_on_page(url):
     result = get_HTML(url)
     soup = BeautifulSoup(result , 'html.parser')
     if soup.find('div' ,  class_ = "with-pad") != None:
@@ -63,7 +63,7 @@ def all_page_info(url):
     next_page = True
     all_page = []
     while next_page != False:
-        html, next_page = new_page(url + '~' + str(numb))
+        html, next_page = have_information_on_page(url + '~' + str(numb))
 
         all_page.extend(parse_books(html))
         random_numb = random.randint(7 , 30) 
