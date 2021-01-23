@@ -11,7 +11,7 @@ def get_HTML(url):
         result.encoding = "utf8"
         jar = result.cookies
         return result.text
-        
+
     except (requests.RequestException , ValueError):
         print('сетевая ошибка')
         return False

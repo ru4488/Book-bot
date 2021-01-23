@@ -22,7 +22,7 @@ class User(Base):
     def __repr__(self):
         return f'<User {self.name}>'
 
-        
+
 class Review(Base):
     __tablename__ = 'reviews'
     id = Column(Integer, primary_key=True)
@@ -31,8 +31,8 @@ class Review(Base):
     book = relationship("Book", back_populates="reviews")
     score = Column(DECIMAL)
     user_id = Column(Integer , ForeignKey('users.id'))
-    
-    
+
+
     def __repr__(self):
         return f'<Book review {self.book_id} {self.score} {self.user} >'
 

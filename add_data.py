@@ -1,17 +1,20 @@
 from db import db_session
 from models import User, Review, Book
 from my_page_book import all_page_info
+from  func_cicle  import  func_add_bc
+
 from sqlalchemy import Column, Integer, String, and_
 from sqlalchemy.orm.exc import NoResultFound
 
 
 def store_books(all_info):
-    for row in all_info:   
-        user = get_or_create_user(row['user'])   
+    for row in all_info:
+        user = get_or_create_user(row['user'])
         book = get_or_create_book(row)
         create_or_not_review(book , user, row)
 
-                
+
+
 def get_or_create_user(username):
     user = User.query.filter(User.name == username).first()
     if not user:
@@ -19,7 +22,11 @@ def get_or_create_user(username):
         db_session.add(user)
         db_session.commit()
     return user
+def  Reviewers_add_db(all_info):
+    for row in all_info:
 
+        a=str(row['Url'])
+        func_add_bc(a)
 def get_or_create_book(row):
     book = Book.query.filter(Book.livelib_id == row['book_id']).first()
     if not book:
@@ -44,11 +51,13 @@ def create_or_not_review(book , user , row):
         db_session.commit()
 
 
+
 if __name__ == "__main__":
     url = 'https://www.livelib.ru/reader/NatalyaMayak/read'
     all_info = all_page_info(url)
     store_books(all_info)
-# 
+    Reviewers_add_db(all_info)
+#
 # 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
 'https://www.livelib.ru/reader/livjuly/read'
 "https://www.livelib.ru/reader/VartanPopov/read"
