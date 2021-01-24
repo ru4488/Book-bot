@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String , DECIMAL , ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 from db import Base, engine
 
 class Book(Base):
@@ -11,7 +13,10 @@ class Book(Base):
     reviews = relationship("Review", back_populates="book" )
 
     def __repr__(self):
-        return f'<Book {self.name} {self.livelib_id} {self.author}>'
+        return f'<Book {self.name} {self.livelib_id} {self.author} >'
+
+    #def  ocennka(self):
+        #print( f' {self.reviews[0].score}'  )
 
 class User(Base):
     __tablename__ = 'users'
