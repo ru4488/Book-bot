@@ -47,5 +47,14 @@ class Review(Base):
     def __repr__(self):
         return f'<Book review {self.book_id} {self.score} {self.user} >'
 
+
+class Used_User(Base):
+    __tablename__ = 'used_users'
+    id = Column(Integer , primary_key=True)
+    name = Column(String , unique=True )
+
+    def __repr__(self):
+        return f'<Used user {self.name}>'
+
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)
