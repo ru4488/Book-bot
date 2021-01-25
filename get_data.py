@@ -1,56 +1,68 @@
 from models import User, Review, Book
 from sqlalchemy import and_
+from collections import Counter
 
-def all_score_book(my_book):
-    scores_list = []
-    all_score_book = Review.query.filter(Review.book_id == my_book.id )
-    for row in all_score_book:
-        scores_list.append(row)
-    return scores_list
-
-def all_score_user(my_name):
-    scores_list = []
-    all_score_user = Review.query.filter(Review.user_id == my_name.id )
-    for row in all_score_user:
-        scores_list.append(row)
-    return scores_list
+def user_like_me(user_name , all_by_user):
+    user_like_me_list = []
+    for row in all_by_user:
+        user_like_me = Review.query.filter(Review.book_id == row.book_id,
+                                   Review.user_id != user_name.id , 
+                                   Review.score == row.score
+                                    ).all()
+        if len(user_like_me) != 0:
+            user_like_me_list += user_like_me
+    return user_like_me_list
 
 
-def all_books_user(my_name , my_book):
-    all_books_user_list = []
-    books_user = Review.query.filter(Review.user_id == my_name.id , Review.book_id == my_book.id).first()
-    all_books_user_list.append(books_user)
-    return all_books_user_list
+def count_user(user_like_me_list):
+    user_like_me_count_list = []
+    for row in  user_like_me_list:
+        user_like_me_count_list.append(row.user_id)
+    most_user = []
+    three_most_user = Counter(user_like_me_count_list).most_common(3)
+    for row in three_most_user:
+        if row[1] > 3:
+            most_user.append(row[0])
+    return most_user
 
-# users_list = []
-# my_name = User.query.filter(User.name == "LushbaughPizzicato").first() 
-# books_dir = {}      
-# my_book =  Book.query.filter(Book.livelib_id  == '1000330921').first()
-# about_my_book = Review.query.filter(and_(Review.book_id == my_book.id , Review.user_id == my_name.id)).first()
-# users_read_my_book = Review.query.filter(and_(Review.book_id == my_book.id , Review.score == about_my_book.score , Review.user_id != my_name.id)).all()
+def get_book(most_user):
+    best_book_list = []
+    for row in most_user:
+        best_book = Review.query.filter(Review.user_id == row , Review.score >= 4 ).all()
+        best_book_list += best_book
+    return best_book_list
 
-# for row in users_read_my_book:
-#     users_list.append(row.user)
+# book =  Book.query.first()
+# all_by_book = Review.all_by_book(book.id)
+# # my_book.reviews
+# print(all_by_book)
 
-# books_dir[my_book] = users_list
-# print(books_dir)
 
-book_score_dir = {}
-my_book =  Book.query.first()
-book_scores = all_score_book(my_book)
-book_score_dir[my_book] = book_scores
-# print(book_score_dir)
 
-user_score_dir = {}
-my_name = User.query.filter(User.name == "LushbaughPizzicato").first()
-user_score = all_score_user(my_name)
-user_score_dir[my_name] = user_score
-# print(user_score_dir)
 
-user_books_and_score_dir = {}
-user_books_and_score = all_books_user(my_name , my_book)
-user_books_and_score_dir[my_name] = user_books_and_score
-print(user_books_and_score_dir)
+# user_book_info = Review.user_and_book(user_name , book)
+
+
+
+
+
+if __name__ == "__main__":
+    user_name = User.query.filter(User.name == "LushbaughPizzicato").first()
+    all_by_user = Review.all_by_user(user_name.id)
+
+    user_like_me_list = user_like_me(user_name , all_by_user)
+    most_user = count_user(user_like_me_list)
+    best_book = get_book(most_user)
+    print(best_book)
+    
+
+
+
+
+
+
+
+
 
 
 

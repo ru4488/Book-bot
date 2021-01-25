@@ -20,7 +20,7 @@ def get_html(URL):
         rq  = requests.post(URL , cookies=jar,headers=headerss)
         rq.encoding = 'utf-8'
 
-        time.sleep(random.randint(40, 45))
+        time.sleep(random.randint(40, 120))
         return  rq.text
     except(requests.RequestException,ValueError):
         return False
@@ -113,7 +113,7 @@ def  funncct_get_db(name_book,id__livelib,reviewer_name,score):
 
     s = Review()
     s.score=score
-    user.review.append(s)
+    user.reviews.append(s)
     s.book=book
     #s.books.append(book)
     db_session.add(s)

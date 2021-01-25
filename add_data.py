@@ -53,10 +53,10 @@ def create_or_not_review(book , user , row):
 
 
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/NatalyaMayak/read'
+    url = 'https://www.livelib.ru/reader/PrekrasnayaNeznakomka/read'
     all_info = all_page_info(url)
     store_books(all_info)
-    Reviewers_add_db(all_info)
+    # Reviewers_add_db(all_info)
 #
 # 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
 'https://www.livelib.ru/reader/livjuly/read'
