@@ -61,12 +61,13 @@ def parse_books(html):
 def have_information_on_page(url):
     result = get_HTML(url)
     soup = BeautifulSoup(result , 'html.parser')
-    if soup.find('span' , id="a-list-page-next-") in soup.find_all('span', class_="pagination__page"):
-        return result , False
-    
+    # if soup.find('span' , id="a-list-page-next-") in soup.find_all('span', class_="pagination__page"):
+
+    if soup.find('div' , id="objects-more"):
+        return result , True
     # elif soup.find('div' ,  class_ = "with-pad") != None:
     #     return result , False
-    return result , True
+    return result , False
 
 def all_page_info(url):
     numb = 1

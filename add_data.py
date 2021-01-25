@@ -50,15 +50,23 @@ def create_or_not_review(book , user , row):
         db_session.add(review)
         db_session.commit()
 
+def get_new_user_info():
+    get_info_user = User.query.all()
+    for row in get_info_user:
+        url = 'https://www.livelib.ru/reader/' + row.name + '/read'
+        all_page_info(url)
 
 
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/PrekrasnayaNeznakomka/read'
-    all_info = all_page_info(url)
-    store_books(all_info)
-    # Reviewers_add_db(all_info)
-#
-# 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
+    # url = 'https://www.livelib.ru/reader/Anton-Kozlov/read'
+    # all_info = all_page_info(url)
+    # store_books(all_info)
+    # Reviewers_add_db(all_info)    "поиск пользователей по книгам Вартан"
+    get_new_user_info()
+
+    
+
+'https://www.livelib.ru/reader/LushbaughPizzicato/read'
 'https://www.livelib.ru/reader/livjuly/read'
 "https://www.livelib.ru/reader/VartanPopov/read"
 
