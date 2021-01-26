@@ -61,27 +61,41 @@ def parse_books(html):
 def have_information_on_page(url):
     result = get_HTML(url)
     soup = BeautifulSoup(result , 'html.parser')
-    # if soup.find('span' , id="a-list-page-next-") in soup.find_all('span', class_="pagination__page"):
+    books = how_many_books(soup, url)
+    print(books)
 
-    if soup.find('div' , id="objects-more"):
-        return result , True
-    # elif soup.find('div' ,  class_ = "with-pad") != None:
-    #     return result , False
-    return result , False
+    if books >= 300:
+        return result , False , books
+    elif soup.find('div' , id="objects-more"):
+        return result , True , books
 
+    return result , False , books
+
+# считает страницы, и количствтво прочтенных книг
 def all_page_info(url):
     numb = 1
     next_page = True
     all_page = []
     while next_page != False:
-        html, next_page = have_information_on_page(url + '~' + str(numb))
+        html, next_page , books = have_information_on_page(url + '~' + str(numb))
+
         print(url + '~' + str(numb))
+        random_numb = random.randint(7 , 30)
+
         all_page.extend(parse_books(html))
         random_numb = random.randint(7 , 30)
         time.sleep(random_numb)
         numb += 1
-    return  all_page
 
+    return  all_page , books
+
+# сколько книг прочел пользователь 
+def how_many_books(soup, url):
+    user_name = url.split("/")
+    web_adress = soup.find("a" , href="/reader/" + user_name[4] + "/read")
+    books = web_adress.text.split(' ')
+    return int(books[1])
+    
 if __name__ == "__main__":
     # url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
     # url = "https://www.livelib.ru/reader/VartanPopov/read"

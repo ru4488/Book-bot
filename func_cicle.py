@@ -20,7 +20,8 @@ def get_html(URL):
         rq  = requests.post(URL , cookies=jar,headers=headerss)
         rq.encoding = 'utf-8'
 
-        time.sleep(random.randint(40, 120))
+        time.sleep(random.randint(7, 30))
+        
         return  rq.text
     except(requests.RequestException,ValueError):
         return False
@@ -34,6 +35,8 @@ def find_flag_next(html):#  находим ссылкку  на  сследую�
     for sulka  in  next_sulka:
         if  sulka.text  =='›':
             cchar_nnext=sulka['href']
+            time.sleep(random.randint(7, 30))
+            print(1)
     return  cchar_nnext
 
 
@@ -157,10 +160,10 @@ def  func_add_bc(id_name):
 
         next=find_flag_next(html)
 
-        if  next==''  or  i==6:
+        if  next=='':
 
             db_session.commit()
             break
-        #time.sleep(random.randint(7, 30))
+        time.sleep(random.randint(7, 30))
         bufer_nachalo_poisk=cconst_nacchalo_zagotov+str(next)
         html=get_html(bufer_nachalo_poisk)

@@ -1,6 +1,6 @@
 from db import db_session
 from models import User, Review, Book, Used_User
-from my_page_book import all_page_info
+from my_page_book import all_page_info , how_many_books
 from  func_cicle  import  func_add_bc
 
 from sqlalchemy import Column, Integer, String, and_
@@ -23,7 +23,7 @@ def get_or_create_user(username):
         db_session.add(user)
         db_session.commit()
     return user
-"Добавляет пользователя у которого взяли информацию про все его книги"
+# "Добавляет пользователя у которого взяли информацию про все его книги"
 def old_old_user(username):
     used_user = Used_User.query.filter(Used_User.name == username).first()
     if not used_user:
@@ -59,17 +59,22 @@ def create_or_not_review(book , user , row):
         db_session.add(review)
         db_session.commit()
 
-"Вставляет пользователя у которого еще не вытащили всю информацию"
+# "Вставляет пользователя у которого еще не вытащили всю информацию"
 def get_new_user_info(old_user):
     get_info_user = User.query.all()
     used_user_list = make_used_user_list(old_user)
     for row in get_info_user:
         if row.name not in used_user_list:
             url = 'https://www.livelib.ru/reader/' + row.name + '/read'
-            all_info =  all_page_info(url)
-            store_books(all_info)
+            all_info , how_many_books =  all_page_info(url)
+            
+# считает количество прочтеных книг
+            
+            if int(how_many_books) <= 300:
+                store_books(all_info)
+            # Reviewers_add_db(all_info)
 
-"Массив пользователей у которых вытащили все книги"
+# "Массив пользователей у которых вытащили все книги"
 def make_used_user_list(old_user):
     used_user_list = []
     for row in old_user:
@@ -80,17 +85,18 @@ def make_used_user_list(old_user):
     
 
 if __name__ == "__main__":
-    # url = 'https://www.livelib.ru/reader/Anton-Kozlov/read'
+    # url = 'https://www.livelib.ru/reader/VartanPopov/read'
     # all_info = all_page_info(url)
     # store_books(all_info)
-    # Reviewers_add_db(all_info)    "поиск пользователей по книгам Вартан"
+    # # """поиск пользователей по книгам Вартан"""
+    # Reviewers_add_db(all_info)    
     
-
+    'собирать информацию по новым пользователям'
     old_user = Used_User.query.all()
     get_new_user_info(old_user)
-    #  = ["LushbaughPizzicato" , 'Airene' , "NikaTeymurova" , "Anton-Kozlov" , 'PrekrasnayaNeznakomka']
-    
 
+    
+'https://www.livelib.ru/reader/Anton-Kozlov/read'
 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
 'https://www.livelib.ru/reader/livjuly/read'
 "https://www.livelib.ru/reader/VartanPopov/read"
