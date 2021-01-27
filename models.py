@@ -41,8 +41,8 @@ class Review(Base):
     def all_by_user(cls, user_name):
         return cls.query.filter(cls.user_id == user_name).all()
     @classmethod
-    def user_and_book(cls, user_name , book):
-            return cls.query.filter(cls.user_id == user_name.id , cls.book_id == book.id).first()
+    def by_user_and_book(cls, user_name , book):
+        return cls.query.filter(cls.user_id == user_name.id , cls.book_id == book.id).first()
 
     def __repr__(self):
         return f'<Book review {self.book_id} {self.score} {self.user} >'

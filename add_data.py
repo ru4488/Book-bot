@@ -66,12 +66,8 @@ def get_new_user_info(old_user):
     for row in get_info_user:
         if row.name not in used_user_list:
             url = 'https://www.livelib.ru/reader/' + row.name + '/read'
-            all_info , how_many_books =  all_page_info(url)
-            
-# считает количество прочтеных книг
-            
-            if int(how_many_books) <= 300:
-                store_books(all_info)
+            all_info, =  all_page_info(url)
+            store_books(all_info)
             # Reviewers_add_db(all_info)
 
 # "Массив пользователей у которых вытащили все книги"
@@ -87,7 +83,7 @@ def make_used_user_list(old_user):
 if __name__ == "__main__":
     # url = 'https://www.livelib.ru/reader/VartanPopov/read'
     # all_info = all_page_info(url)
-    # store_books(all_info)
+    store_books(all_info)
     # # """поиск пользователей по книгам Вартан"""
     # Reviewers_add_db(all_info)    
     

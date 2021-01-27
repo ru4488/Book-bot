@@ -64,7 +64,7 @@ def have_information_on_page(url):
     books = how_many_books(soup, url)
     print(books)
 
-    if books >= 300:
+    if books >= 320:
         return result , False , books
     elif soup.find('div' , id="objects-more"):
         return result , True , books
