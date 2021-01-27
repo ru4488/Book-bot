@@ -37,7 +37,9 @@ def get_book(most_user):
         best_book = Review.query.filter(Review.user_id == row , Review.score >= 4 ).all()
         best_book_list += best_book
     for i in best_book_list:
-        best_books_id.append(i.book_id)
+        if i.book_id not in best_books_id:
+            best_books_id.append(i.book_id)
+  
     return best_books_id
 
 # book =  Book.query.first()
@@ -46,12 +48,15 @@ def get_book(most_user):
 # print(all_by_book)
 def remove_the_read_ones(best_book_id , user):
     user_book = Review.query.filter(Review.user_id == user.id).all()
-    print(best_book_id)
     for row in user_book:
-        if row.book_id in best_book_id:
-            
+        if row.book_id in best_book_id: 
             best_book_id.remove(row.book_id)
-            print(best_book_id)
+    book_for_you_list = []
+    for i in best_book_id:
+        
+        book_for_you =  Book.query.filter(Book.id == i).first()
+        book_for_you_list.append(f'{book_for_you.name} - {book_for_you.author}' )
+    print(book_for_you_list)
 
 
 
