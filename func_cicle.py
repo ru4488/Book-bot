@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 import requests
+#import grequests
+#import async
+import asyncio #  [1]
+import aiohttp
 import time
+#import async
 from fake_useragent import UserAgent
 from    hederres_const  import  const_headerrs,  cconst_nacchalo_zagotov,cconst_end_zagotov
 from bs4 import BeautifulSoup
-
+from multiprocessing  import Pool
 from  models  import  Book,User,Review,NoResultFound,IntegrityError
 from db import db_session
 import    random
@@ -25,9 +30,61 @@ def get_html(URL):
     except(requests.RequestException,ValueError):
         return False
 
+def get_html2(URL):
+    #print('URL=',URL)
+    time.sleep(random.randint(40, 45))
+    URRL=[]
+    URRL.append(URL)
+    a1=URL.split('#')
+    i=0
+    for  i  in  range(2,3):
+        a=a1[0]+'/~'+str(i)+'#reviews'
+        URRL.append(a)
+    return URRL
+    #for  ij in URRL:
+        #str_23='test'+str(i)+'.html'
+        #async with aiohttp.ClientSession() as session:
+            #async with session.get(ij) as resp:
+                #await resp.text()
+                #a= resp.text()
+                #with open(str_23,'w',encoding='utf8') as f:
+                    #await resp.text()
+                    #f.write(a)
 
-def find_flag_next(html):#  находим ссылкку  на  сследующие  страницу
-    soup = BeautifulSoup(html , 'html.parser')
+
+
+
+                # print(resp.status)
+                 #print(await resp.text())
+                 #[4]
+                #response = await resp.read()
+                #print(response)
+    #for ii  in  URRL:
+    #print(dir(grequests))
+    #rs = (grequests.get(u) for u in URRL)
+    #print(grequests.map(rs))
+    #for _ in range(1,3):
+    #headerss = {"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:63.0) Gecko/20100101 Firefox/63.0", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Accept-Language": "en-US,en;q=0.5", "Accept-Encoding": "gzip, deflate", "Connection": "close", "Upgrade-Insecure-Requests": "1"}
+    #requests_ = (grequests.get(u) for u in URRL)
+    #requests_.encoding = 'utf-8'
+    #print('requests_=',dir(requests_))
+    #grequests.map(requests_)
+    #print('grequests=',dir(grequests))
+    #jar = requests_.request.cookies
+    #rq  = grequests.post(requests_, cookies=jar,headers=headerss)
+    #grequests.map(requests_)
+    #rq.request.encoding = 'utf-8'
+    #return  rq.request.text
+
+        #print('ii=',ii)
+
+
+        #print('i=',i)
+
+    #pass
+
+def find_flag_next(soup):#  находим ссылкку  на  сследующие  страницу
+    #soup = BeautifulSoup(html , 'html.parser')
 
     next_sulka = soup.find_all('a',class_='pagination__page')
     cchar_nnext=''
@@ -38,9 +95,9 @@ def find_flag_next(html):#  находим ссылкку  на  сследую�
 
 
 
-def find_all_name(html):# нацтти  основную  информацию  про ккнигу
+def find_all_name(soup):# нацтти  основную  информацию  про ккнигу
     '''находим  название  ккниги  '''
-    soup=BeautifulSoup(html,'html.parser')
+    #soup=BeautifulSoup(html,'html.parser')
     name_book_tag = soup.select('h1.bc__book-title')[0].text.strip()
     namber_id__livilebbs =  soup.find(class_="bc-menu__status-wrapper")
     namber_id__livilebb=namber_id__livilebbs['id'].split('-')[3]
@@ -121,46 +178,78 @@ def  funncct_get_db(name_book,id__livelib,reviewer_name,score):
     db_session.commit()
 
 
+    #try:
+        #response  =requests.get(URL)
+        #response.encoding = 'utf-8'
+
+        #jar = response.cookies
+        #headerss=const_headerrs
+
+        #rq  = requests.post(URL , cookies=jar,headers=headerss)
+        #rq.encoding = 'utf-8'
+
+        #time.sleep(random.randint(40, 45))
+        #return  rq.text
+    #except(requests.RequestException,ValueError):
+        #return False
+
+def  merrge__funnc(url):
+    #a=1
+    a1=url.split('https://www.livelib.ru/book/')
+
+    str_23=str(a1[1])+'.html'
+    aerrt_text=get_html(url)
+    with open(str_23,'w',encoding='utf8') as f:
+        f.write(aerrt_text)
+    #pass
 def  func_add_bc(id_name):
     strig_bbufer=cconst_nacchalo_zagotov+str(id_name)
     i=0
     flag=True
-    print('strig_bbufer=',strig_bbufer)
-    html=get_html(strig_bbufer)
-    while(flag):
-        athor_recendent_nummber=[]
-        Scores_buferr=[]
-        athor_recendent=[]
-
-        i=i+1
-        if i==1:
-            buferr_book=[]
-            name_book,id__livelib2 =find_all_name(html)
-            buferr_book.append(name_book)
-
-            athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
-            book__namerr=str(buferr_book[0])
+    #print('strig_bbufer=',strig_bbufer)
+    all_URRL=get_html2(strig_bbufer)
+    print('all_URRL=',all_URRL)
+    with  Pool(2) as  p:
+        p.map(merrge__funnc,all_URRL)
 
 
+    #html=get_html(strig_bbufer)
 
-            for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
-                funncct_get_db(book__namerr , id__livelib2 ,  athor ,  nummb)
+    #while(flag):
+        #athor_recendent_nummber=[]
+        #Scores_buferr=[]
+        #athor_recendent=[]
+        #soup=BeautifulSoup(html,'html.parser')
 
+        #i=i+1
+        #if i==1:
+            #buferr_book=[]
+            #name_book,id__livelib2 =find_all_name(soup)
+            #buferr_book.append(name_book)
 
-
-        else:
-            athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
-            for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
-                funncct_get_db(book__namerr , id__livelib2 ,  athor ,  nummb)
+            #athor_recendent,athor_recendent_nummbers= find_all_name_all_big(soup)
+            #book__namerr=str(buferr_book[0])
 
 
 
-        next=find_flag_next(html)
+            #for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+                #funncct_get_db(book__namerr , id__livelib2 ,  athor ,  nummb)
 
-        if  next==''  or  i==6:
 
-            db_session.commit()
-            break
+
+        #else:
+            #athor_recendent,athor_recendent_nummber =find_all_name_all_big(soup)
+            #for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+                #funncct_get_db(book__namerr , id__livelib2 ,  athor ,  nummb)
+
+
+
+        #next=find_flag_next(soup)
+
+        #if  next==''  or  i==6:
+
+            #db_session.commit()
+            #break
         #time.sleep(random.randint(7, 30))
-        bufer_nachalo_poisk=cconst_nacchalo_zagotov+str(next)
-        html=get_html(bufer_nachalo_poisk)
+        #bufer_nachalo_poisk=cconst_nacchalo_zagotov+str(next)
+        #shtml=get_html(bufer_nachalo_poisk)

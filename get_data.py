@@ -75,4 +75,3 @@ user_score_dir[my_name] = user_score
 user_books_and_score_dir = {}
 user_books_and_score = all_books_user(my_name , my_book)
 user_books_and_score_dir[my_name] = user_books_and_score
-#print(user_books_and_score_dir)

@@ -23,9 +23,10 @@ def get_or_create_user(username):
         db_session.commit()
     return user
 def  Reviewers_add_db(all_info):
-    for row in all_info:
-
-        a=str(row['Url'])
+    #print(dir(all_info))
+    for row in all_info.values():
+        #print('row=',(row))
+        a=str(row)
         func_add_bc(a)
 def get_or_create_book(row):
     book = Book.query.filter(Book.livelib_id == row['book_id']).first()
@@ -53,9 +54,12 @@ def create_or_not_review(book , user , row):
 
 
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/NatalyaMayak/read'
-    all_info = all_page_info(url)
-    store_books(all_info)
+    #url = 'https://www.livelib.ru/reader/SvetlanaPescatore/read'
+    #all_info = all_page_info(url)
+    #store_books(all_info)
+    all_info={}
+    all_info['Url']='https://www.livelib.ru/book/1001394039-kak-obehat-ves-mir-na-odnu-zarplatu-puteshestvuem-deshevo-i-horosho-pavlyuk-semen#reviews'
+    print('all_info=',all_info['Url'])
     Reviewers_add_db(all_info)
 #
 # 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
@@ -63,5 +67,6 @@ if __name__ == "__main__":
 "https://www.livelib.ru/reader/VartanPopov/read"
 
 'https://www.livelib.ru/reader/kira_katz/read'
-
+'https://www.livelib.ru/reader/SvetlanaPescatore/read'
+'https://www.livelib.ru/reader/NatalyaMayak/read'
 'https://www.livelib.ru/reader/NatalyaMayak/read'
