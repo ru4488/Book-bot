@@ -11,18 +11,25 @@ from    hederres_const  import  const_headerrs,  cconst_nacchalo_zagotov,cconst_
 from bs4 import BeautifulSoup
 from multiprocessing  import Pool
 from  models  import  Book,User,Review,NoResultFound,IntegrityError
-from db import db_session
+from db import db_session,proxies
 import    random
+from random import choice
 jar = requests.cookies.RequestsCookieJar()
+id=0
 def get_html(URL):
     try:
-        response  =requests.get(URL)
+        proxy = proxies#choice(proxies)#{"https" : proxiess[id % len(proxiess)]}
+        print('proxy=',proxy)
+
+        response  =requests.get(URL, proxies=proxy)
+        #response  =requests.get(URL)
         response.encoding = 'utf-8'
 
         jar = response.cookies
         headerss=const_headerrs
 
-        rq  = requests.post(URL , cookies=jar,headers=headerss)
+        rq  = requests.post(URL , cookies=jar,headers=headerss, proxies=proxy)
+        #rq  = requests.post(URL , cookies=jar,headers=headerss)
         rq.encoding = 'utf-8'
 
         time.sleep(random.randint(40, 45))
@@ -31,16 +38,21 @@ def get_html(URL):
         return False
 
 def get_html2(URL):
-    #print('URL=',URL)
-    time.sleep(random.randint(40, 45))
+
+    #time.sleep(random.randint(40, 45))
     URRL=[]
     URRL.append(URL)
-    a1=URL.split('#')
-    i=0
-    for  i  in  range(2,3):
-        a=a1[0]+'/~'+str(i)+'#reviews'
-        URRL.append(a)
-    return URRL
+    URRL.append('https://www.livelib.ru/book/1000186331/reviews/~2#reviews')
+    return  URRL
+
+    #a1=URL.split('#')
+    #i=0
+    #for  i  in  range(2,3):
+        #a=a1[0]+'/~'+str(i)+'#reviews'
+        #URRL.append(a)
+    #return URRL
+
+
     #for  ij in URRL:
         #str_23='test'+str(i)+'.html'
         #async with aiohttp.ClientSession() as session:
@@ -195,10 +207,13 @@ def  funncct_get_db(name_book,id__livelib,reviewer_name,score):
 
 def  merrge__funnc(url):
     #a=1
-    a1=url.split('https://www.livelib.ru/book/')
+    a1=url.split('#')
 
     str_23=str(a1[1])+'.html'
+    print('str_23=',str_23)
     aerrt_text=get_html(url)
+    print('aerrt_text=',aerrt_text)
+
     with open(str_23,'w',encoding='utf8') as f:
         f.write(aerrt_text)
     #pass

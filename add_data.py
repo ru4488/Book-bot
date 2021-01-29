@@ -58,7 +58,7 @@ if __name__ == "__main__":
     #all_info = all_page_info(url)
     #store_books(all_info)
     all_info={}
-    all_info['Url']='https://www.livelib.ru/book/1001394039-kak-obehat-ves-mir-na-odnu-zarplatu-puteshestvuem-deshevo-i-horosho-pavlyuk-semen#reviews'
+    all_info['Url']='https://www.livelib.ru/book/1000186331/reviews-garri-potter-i-printspolukrovka-brat-volk-komplekt-iz-2-knig-sbornik#reviews'
     print('all_info=',all_info['Url'])
     Reviewers_add_db(all_info)
 #
