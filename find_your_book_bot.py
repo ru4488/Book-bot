@@ -19,27 +19,23 @@ def user_name_livelib(update, context):
 
     if "www.livelib.ru" in user_page:
         if ('https:' in user_page) and ('reader' in user_page):
-            context.user_data['user_name'] = user_page[4]
-            old_user = User.query.filter(User.name == user_page[4]).first()
-            if old_user == None:
-                update.message.reply_text('Я пока о тебе ничего не знаю, придется немного подождать ....')
-                new_user_from_bot(user_page[4])
-            else: 
-                best_book_for_you(user_page[4])
+            user_name = user_page[4]
+            
+        elif 'reader' in user_page: 
+            user_name = user_page[2]    
+            
+        context.user_data['user_name'] = user_name
+        old_user = User.query.filter(User.name == user_name).first()
+        if old_user == None:
+            update.message.reply_text('Я пока о тебе ничего не знаю, придется немного подождать ....')
+            new_user_from_bot(user_name)
+            answer = best_book_for_you(user_name)
+            update.message.reply_text(answer[0])
 
-                
-        elif 'reader' in user_page:
-            context.user_data['user_name'] = user_page[2]
-            old_user = User.query.filter(User.name == user_page[4]).first()
-            new_user_from_bot(user_page[4])
-            update.message.reply_text(user_page[2])
-            if old_user == None:
-                update.message.reply_text('Я пока о тебе ничего не знаю, придется немного подождать ....')
-                new_user_from_bot(user_page[4])
-            else: 
-                best_book_for_you(user_page[4])
-        else:
-            update.message.reply_text("Не могу тебя распознать. Убедись, что в ссылке есть твой никнейм")  
+        else : 
+            answer = best_book_for_you(user_name)
+            update.message.reply_text(answer[0])
+ 
     else:
         update.message.reply_text("Что то пошло не так. Видимо не тот сайт")
 

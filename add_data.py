@@ -7,35 +7,34 @@ from sqlalchemy import Column, Integer, String, and_
 from sqlalchemy.orm.exc import NoResultFound
 
 
-def store_books(all_info):
+def store_books(all_info , books_read):
     for row in all_info:
-        user = get_or_create_user(row['user'])
+        user = get_or_create_user(row['user'] , books_read)
         book = get_or_create_book(row)
         create_or_not_review(book , user, row)
-        old_old_user(row['user'])
 
 
 
-def get_or_create_user(username):
+
+def get_or_create_user(username , books_read):
     user = User.query.filter(User.name == username).first()
     if not user:
-        user = User(name = username)
+        user = User(
+            name = username, 
+            how_much_read = books_read
+         )
+
         db_session.add(user)
         db_session.commit()
     return user
-# "Добавляет пользователя у которого взяли информацию про все его книги"
-def old_old_user(username):
-    used_user = Used_User.query.filter(Used_User.name == username).first()
-    if not used_user:
-        used_user = Used_User(name = username)
-        db_session.add(used_user)
-        db_session.commit()    
+  
 
 def  Reviewers_add_db(all_info):
     for row in all_info:
 
         a=str(row['Url'])
         func_add_bc(a)
+
 def get_or_create_book(row):
     book = Book.query.filter(Book.livelib_id == row['book_id']).first()
     if not book:
@@ -58,42 +57,21 @@ def create_or_not_review(book , user , row):
 
         db_session.add(review)
         db_session.commit()
-
-# "Вставляет пользователя у которого еще не вытащили всю информацию"
-def get_new_user_info(old_user):
-    get_info_user = User.query.all()
-    used_user_list = make_used_user_list(old_user)
-    for row in get_info_user:
-        if row.name not in used_user_list:
-            url = 'https://www.livelib.ru/reader/' + row.name + '/read'
-            all_info , much_books =  all_page_info(url)
-            if much_books <= 120:
-                store_books(all_info)
-            # Reviewers_add_db(all_info)
-
-# "Массив пользователей у которых вытащили все книги"
-def make_used_user_list(old_user):
-    used_user_list = []
-    for row in old_user:
-        if row not in used_user_list:
-            used_user_list.append(row.name)
-    return used_user_list
+          
         
-    
 
 if __name__ == "__main__":
-    # url = 'https://www.livelib.ru/reader/VartanPopov/read'
-    # all_info = all_page_info(url)
-    # store_books(all_info)
+    url = 'https://www.livelib.ru/reader/Mikhael_Stokes/read'
+    all_info , books_read = all_page_info(url)
+    store_books(all_info , books_read)
     # # """поиск пользователей по книгам Вартан"""
     # Reviewers_add_db(all_info)    
-    
-    'собирать информацию по новым пользователям'
-    old_user = Used_User.query.all()
-    get_new_user_info(old_user)
+
+
+
 
     
-'https://www.livelib.ru/reader/Anton-Kozlov/read'
+'https://www.livelib.ru/reader/IrinaLinkyavichene/read'
 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
 'https://www.livelib.ru/reader/livjuly/read'
 "https://www.livelib.ru/reader/VartanPopov/read"

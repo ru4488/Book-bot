@@ -20,6 +20,7 @@ class User(Base):
     id = Column(Integer , primary_key=True)
     name = Column(String , unique=True )
     reviews = relationship("Review" , back_populates="user")
+    how_much_read = Column(Integer)
 
     def __repr__(self):
         return f'<User {self.name}>'

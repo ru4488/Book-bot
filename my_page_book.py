@@ -57,19 +57,32 @@ def parse_books(html):
     return all_about_book_list
 
 
+# сколько книг прочел пользователь 
+def how_many_books(soup, url):
+    user_name = url.split("/")
+    web_adress = soup.find("a" , href="/reader/" + user_name[4] + "/read")
+    if web_adress != None:
+        
+        books = web_adress.text.split(' ')
+        return int(books[1])
+    else:
+        web_adress = 0
+    return web_adress
+
 
 def have_information_on_page(url):
     result = get_HTML(url)
-    soup = BeautifulSoup(result , 'html.parser')
-    books = how_many_books(soup, url)
-    print(books)
-
-    if books >= 120:
+    if result == False:
+        print(False)
+    elif result != False:
+        soup = BeautifulSoup(result , 'html.parser')
+        books = how_many_books(soup, url)
+        # для сбора прочтенных книг 
+        # if books >= 0:
+        #     return result , False , books
+        if soup.find('div' , id="objects-more"):
+            return result , True , books     
         return result , False , books
-    elif soup.find('div' , id="objects-more"):
-        return result , True , books
-
-    return result , False , books
 
 # считает страницы, и количствтво прочтенных книг
 def all_page_info(url):
@@ -89,12 +102,7 @@ def all_page_info(url):
 
     return  all_page , books
 
-# сколько книг прочел пользователь 
-def how_many_books(soup, url):
-    user_name = url.split("/")
-    web_adress = soup.find("a" , href="/reader/" + user_name[4] + "/read")
-    books = web_adress.text.split(' ')
-    return int(books[1])
+
     
 if __name__ == "__main__":
     # url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
