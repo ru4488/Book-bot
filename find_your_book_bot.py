@@ -4,6 +4,7 @@ from telegram.ext import Updater , CommandHandler , MessageHandler, Filters
 from add_user_from_bot import new_user_from_bot
 from get_data import best_book_for_you
 from models import User
+import random
 logging.basicConfig(filename='bot.log', level=logging.INFO)
 
 
@@ -30,15 +31,24 @@ def user_name_livelib(update, context):
             update.message.reply_text('Я пока о тебе ничего не знаю, придется немного подождать ....')
             new_user_from_bot(user_name)
             answer = best_book_for_you(user_name)
-            update.message.reply_text(answer[0])
+            your_five_book(update , answer)
 
         else : 
             answer = best_book_for_you(user_name)
-            update.message.reply_text(answer[0])
- 
+            your_five_book(update , answer)
     else:
         update.message.reply_text("Что то пошло не так. Видимо не тот сайт")
 
+
+def your_five_book(update , answer):
+    x = 0
+    leght_list = len(answer)
+    while x < leght_list:
+        x += 1
+        random_numb = random.randint(0 , leght_list)
+        update.message.reply_text(answer[random_numb])
+        if x == 5:
+            x = leght_list 
 
 def main():
     mybot = Updater(settings.API_KEY, use_context=True)
