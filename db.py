@@ -12,9 +12,10 @@ db_session = scoped_session(sessionmaker(bind=engine))
     #"https://91.24.14.113:8085",
     #"https://146.15.204.70:8085",
     #"https://193.10.171.7:8085"]
-proxies = {
-  "https": "http://10.10.1.10:3128",
-  "https": "http://10.10.1.10:1080",
-}
+#proxies = {
+    #"http": 'http://209.50.52.162:9050',
+    #"https": 'http://186.86.247.169'
+#}
+proxies = ['104.248.159.145:8888', '113.53.83.252:54356', '206.189.236.200:80', '218.48.229.173:808', '119.15.90.38:60622', '186.250.176.156:42575']
 Base = declarative_base()
 Base.query = db_session.query_property()

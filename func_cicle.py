@@ -14,16 +14,24 @@ from  models  import  Book,User,Review,NoResultFound,IntegrityError
 from db import db_session,proxies
 import    random
 from random import choice
+from itertools import cycle
 jar = requests.cookies.RequestsCookieJar()
 id=0
 def get_html(URL):
     try:
-        proxy = proxies#choice(proxies)#{"https" : proxiess[id % len(proxiess)]}
+        #proxy =proxies #choice(proxies.values())#{"https" : proxiess[id % len(proxiess)]}
+        #random.shuffle(proxies)
+        #pitem = cycle(proxies)
+        #proxy = {'https':'http://{}'.format(next(pitem))}
+        proxy_url = choice(proxies)
+        proxy = {'https': f'http://{proxy_url}'}
         print('proxy=',proxy)
 
-        response  =requests.get(URL, proxies=proxy)
+        #response  =requests.get(URL, proxies=proxy)
+        response  =requests.get(URL)
         #response  =requests.get(URL)
         response.encoding = 'utf-8'
+        print('response.json()=',ssresponse.json())
 
         jar = response.cookies
         headerss=const_headerrs
@@ -206,10 +214,12 @@ def  funncct_get_db(name_book,id__livelib,reviewer_name,score):
         #return False
 
 def  merrge__funnc(url):
-    #a=1
-    a1=url.split('#')
+    #global  id
+    #a =  a  +1
+    number = random.randint(20, 35)
 
-    str_23=str(a1[1])+'.html'
+
+    str_23=str(number)+'.html'
     print('str_23=',str_23)
     aerrt_text=get_html(url)
     print('aerrt_text=',aerrt_text)
