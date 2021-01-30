@@ -9,6 +9,7 @@ def new_user_from_bot(new_name):
     if old_user == None:
         url = 'https://www.livelib.ru/reader/' + new_name + '/read'
         all_info , books_read  = all_page_info(url)
+
         store_books(all_info , books_read )
         
     else:

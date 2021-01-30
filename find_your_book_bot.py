@@ -32,13 +32,13 @@ def user_name_livelib(update, context):
             new_user_from_bot(user_name)
             answer = best_book_for_you(user_name)
             your_five_book(update , answer)
-
+            print("Выдал")
         else : 
             answer = best_book_for_you(user_name)
             your_five_book(update , answer)
     else:
         update.message.reply_text("Что то пошло не так. Видимо не тот сайт")
-
+        print("Выдал")
 
 def your_five_book(update , answer):
     x = 0

@@ -73,7 +73,7 @@ def how_many_books(soup, url):
 def have_information_on_page(url):
     result = get_HTML(url)
     if result == False:
-        print(False)
+        return None , False , 0
     elif result != False:
         soup = BeautifulSoup(result , 'html.parser')
         books = how_many_books(soup, url)
@@ -94,13 +94,14 @@ def all_page_info(url):
 
         print(url + '~' + str(numb))
         random_numb = random.randint(7 , 30)
-
-        all_page.extend(parse_books(html))
-        random_numb = random.randint(7 , 30)
-        time.sleep(random_numb)
-        numb += 1
+        if html != None:
+            all_page.extend(parse_books(html))
+            random_numb = random.randint(7 , 30)
+            time.sleep(random_numb)
+            numb += 1
 
     return  all_page , books
+
 
 
     

@@ -61,11 +61,11 @@ def create_or_not_review(book , user , row):
         
 
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/Mikhael_Stokes/read'
+    url = 'https://www.livelib.ru/reader/VartanPopov/read'
     all_info , books_read = all_page_info(url)
     store_books(all_info , books_read)
     # # """поиск пользователей по книгам Вартан"""
-    # Reviewers_add_db(all_info)    
+    Reviewers_add_db(all_info)    
 
 
 
