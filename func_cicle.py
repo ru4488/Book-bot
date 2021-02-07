@@ -20,7 +20,8 @@ def get_html(URL):
         rq  = requests.post(URL , cookies=jar,headers=headerss)
         rq.encoding = 'utf-8'
 
-        time.sleep(random.randint(40, 45))
+        time.sleep(random.randint(7, 30))
+
         return  rq.text
     except(requests.RequestException,ValueError):
         return False
@@ -34,6 +35,8 @@ def find_flag_next(html):#  находим ссылкку  на  сследую�
     for sulka  in  next_sulka:
         if  sulka.text  =='›':
             cchar_nnext=sulka['href']
+            time.sleep(random.randint(7, 30))
+            print(1)
     return  cchar_nnext
 
 
@@ -47,8 +50,10 @@ def find_all_name(html):# нацтти  основную  информацию  
 
     name_athor_tags = soup.find_all('a',class_='bc-author__link')
     athor_names=[]
+    #print('name_athor_tags=',name_athor_tags)
     for name_tag in name_athor_tags:
          tetle=name_tag.text
+         #print('tetle=',tetle)
          athor_names.append(tetle)
 
     return name_book_tag,namber_id__livilebb
@@ -73,7 +78,7 @@ def find_all_name_all_big(html):
         recenzia_numbers.append((tetle3))
     return  recendents  ,  recenzia_numbers
 
-def  get_or_create_book(id__livelib,name_book):
+def  get_or_create_book(id__livelib, name_book):
     c=  Book.query.filter(Book.livelib_id == id__livelib).first()
     if    not  c  :
         c = Book()
@@ -104,21 +109,22 @@ def get_or_create_user(username):
         #
 
     #pass
-def  funncct_get_db(name_book,id__livelib,reviewer_name,score):
-
-    book=get_or_create_book(id__livelib,name_book)
-
+def  funncct_get_db(name_book ,id__livelib , reviewer_name,score):
+    #print(f'funncct_get_db({name_book}, {id__livelib}, {reviewer_name}, {score})')
+    book=get_or_create_book(id__livelib , name_book)
+    # print(book.id)
 
     user= get_or_create_user(reviewer_name) #User.query.filter(User.name == name_2).one()  #session.query(Author).filter(Author.name_2 == name_2  ).one()
-
-    s = Review()
-    s.score=score
-    user.review.append(s)
-    s.book=book
-    #s.books.append(book)
-    db_session.add(s)
-    db_session.add(user)
-    db_session.commit()
+    if Review.query.filter(Review.user_id == user.id , Review.book_id == book.id).count() == 0:
+        s = Review()
+        s.score=score
+        user.reviews.append(s)
+        s.book = book
+        #print(f'appended {s} to user {user}')
+        #s.books.append(book)
+        db_session.add(s)
+        db_session.add(user)
+        db_session.commit()
 
 
 def  func_add_bc(id_name):
@@ -128,7 +134,7 @@ def  func_add_bc(id_name):
     print('strig_bbufer=',strig_bbufer)
     html=get_html(strig_bbufer)
     while(flag):
-        athor_recendent_nummber=[]
+        athor_recendent_nummbers=[]
         Scores_buferr=[]
         athor_recendent=[]
 
@@ -141,26 +147,32 @@ def  func_add_bc(id_name):
             athor_recendent,athor_recendent_nummbers= find_all_name_all_big(html)
             book__namerr=str(buferr_book[0])
 
+            #print('athor_recendent=',athor_recendent)
+
 
 
             for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+                #print('1='+athor)
                 funncct_get_db(book__namerr , id__livelib2 ,  athor ,  nummb)
 
 
 
         else:
-            athor_recendent,athor_recendent_nummber =find_all_name_all_big(html)
+            #print('athor_recendent=',athor_recendent)
+
+            athor_recendent,athor_recendent_nummbers =find_all_name_all_big(html)
             for athor,nummb in  zip(athor_recendent,athor_recendent_nummbers):
+                #print('2='+athor)
                 funncct_get_db(book__namerr , id__livelib2 ,  athor ,  nummb)
 
 
 
         next=find_flag_next(html)
 
-        if  next==''  or  i==6:
+        if  next=='':
 
             db_session.commit()
             break
-        #time.sleep(random.randint(7, 30))
+        time.sleep(random.randint(7, 30))
         bufer_nachalo_poisk=cconst_nacchalo_zagotov+str(next)
         html=get_html(bufer_nachalo_poisk)
