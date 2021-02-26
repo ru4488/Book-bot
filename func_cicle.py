@@ -32,11 +32,13 @@ def find_flag_next(html):#  находим ссылкку  на  сследую�
 
     next_sulka = soup.find_all('a',class_='pagination__page')
     cchar_nnext=''
+    x = 1
     for sulka  in  next_sulka:
         if  sulka.text  =='›':
             cchar_nnext=sulka['href']
             time.sleep(random.randint(7, 30))
-            print(1)
+            x += 1
+            print(x)
     return  cchar_nnext
 
 

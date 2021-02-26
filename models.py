@@ -11,7 +11,7 @@ class Book(Base):
     livelib_id = Column(String , unique=True)
     author =  Column(String)
     reviews = relationship("Review", back_populates="book" )
-
+    book_added = Column(String)
     def __repr__(self):
         return f'<Book {self.name} {self.livelib_id} {self.author}>'
 
@@ -23,7 +23,7 @@ class User(Base):
     how_much_read = Column(Integer)
 
     def __repr__(self):
-        return f'<User {self.name}>'
+        return f'<User {self.name} {self.how_much_read}>'
 
 
 class Review(Base):

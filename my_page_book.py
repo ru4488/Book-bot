@@ -31,8 +31,12 @@ def parse_book_score(review):
     score = review.find("span" , class_="brow-rating marg-right").text
     return str(score)
 
-def user_name(soup): #имя пользователя
-    return soup.find('span' , class_ = 'header-profile-login').text
+def user_name(review): #имя пользователя
+    # return soup.find('span' , class_ = 'header-profile-login').text
+    a = review.find('div' , class_ = 'brow-ratings').text
+    a = (a).split(":")
+    a = a[0].split(' ')
+    return a[1]
 
 def parse_url(review):
     score = review.find("a" , class_="brow-book-name with-cycle").get('href')
@@ -43,19 +47,21 @@ def parse_url(review):
 def parse_books(html):
     all_about_book_list = []
     soup = BeautifulSoup(html , 'html.parser')
-    for review in soup.find_all("div" , class_="brow-data"):
+    stop_word = soup.find("div" , class_="with-pad").text
+    if stop_word != 'Этот список пока пуст.':
+        for review in soup.find_all("div" , class_="brow-data"):
 
-        all_about_book_dir = {}
-        all_about_book_dir['book_id'] = parse_book_id(review)
-        all_about_book_dir['user'] = user_name(soup)
-        all_about_book_dir['title'] = parse_book_name(review)
-        all_about_book_dir['artist']  = parse_book_author(review)
-        all_about_book_dir['score'] = parse_book_score(review)
-        all_about_book_dir['Url'] = parse_url(review)
+            all_about_book_dir = {}
+            all_about_book_dir['book_id'] = parse_book_id(review)
+            all_about_book_dir['user'] = user_name(soup)
+            all_about_book_dir['title'] = parse_book_name(review)
+            all_about_book_dir['artist']  = parse_book_author(review)
+            all_about_book_dir['score'] = parse_book_score(review)
+            all_about_book_dir['Url'] = parse_url(review)
 
-        all_about_book_list.append(all_about_book_dir)
-    return all_about_book_list
-
+            all_about_book_list.append(all_about_book_dir)
+        return all_about_book_list 
+    return False
 
 # сколько книг прочел пользователь 
 def how_many_books(soup, url):
@@ -101,6 +107,12 @@ def all_page_info(url):
             numb += 1
 
     return  all_page , books
+
+def one_page(url):
+    html, next_page , books = have_information_on_page(url)
+    one_page_info = parse_books(html)
+    return one_page_info, books
+
 
 
 

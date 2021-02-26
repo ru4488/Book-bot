@@ -7,21 +7,20 @@ from sqlalchemy import Column, Integer, String, and_
 from sqlalchemy.orm.exc import NoResultFound
 
 
-def store_books(all_info , books_read):
+def store_books(all_info):
     for row in all_info:
-        user = get_or_create_user(row['user'] , books_read)
+        user = get_or_create_user(row['user'])
         book = get_or_create_book(row)
         create_or_not_review(book , user, row)
 
 
 
 
-def get_or_create_user(username , books_read):
+def get_or_create_user(username):
     user = User.query.filter(User.name == username).first()
     if not user:
         user = User(
-            name = username, 
-            how_much_read = books_read
+            name = username
          )
 
         db_session.add(user)
@@ -32,7 +31,7 @@ def get_or_create_user(username , books_read):
 def  Reviewers_add_db(all_info):
     for row in all_info:
 
-        a=str(row['Url'])
+        a = str(row['Url'])
         func_add_bc(a)
 
 def get_or_create_book(row):
@@ -61,15 +60,15 @@ def create_or_not_review(book , user , row):
         
 
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/VartanPopov/read'
+    url = "https://www.livelib.ru/reader/LushbaughPizzicato/read"
     all_info , books_read = all_page_info(url)
-    store_books(all_info , books_read)
+    store_books(all_info)
     # # """поиск пользователей по книгам Вартан"""
     Reviewers_add_db(all_info)    
 
 
 
-
+'https://www.livelib.ru/reader/VartanPopov/read'
     
 'https://www.livelib.ru/reader/IrinaLinkyavichene/read'
 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
