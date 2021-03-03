@@ -30,7 +30,7 @@ def all_reviews_on_one_page(url , page_numb):
 
     
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/nad1204/read'
+    url = 'https://www.livelib.ru/reader/KontikT/read'
     page_numb = 1
     print(all_reviews_on_one_page(url , page_numb))
 
