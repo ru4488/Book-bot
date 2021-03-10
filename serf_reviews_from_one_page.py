@@ -9,7 +9,7 @@ from add_data import store_books
 
 # записан этот пользователь в базу данных или нет 
 def add_or_not_to_database():
-    users = User.query.filter(User.id > 999).all()
+    users = User.query.filter(User.id > 1152).all()
     for row in users:
         how_much_add = Review.query.filter(Review.user_id == row.id).count()
         print(row.id)
@@ -17,29 +17,31 @@ def add_or_not_to_database():
             print('удалили пользователя')
         elif row.how_much_read > how_much_add:
             url = 'https://www.livelib.ru/reader/' + row.name + '/read'
-            parsing_and_add_to_datebase(url)
+            user_name = row.name
+            parsing_and_add_to_datebase(url , user_name)
             print(row.id , 'записан')
         print(row.id , 'уже был')
         
 #  сбор и запись данных в базу данных
 
-def parsing_and_add_to_datebase(url): 
+def parsing_and_add_to_datebase(url , user_name): 
         page_numb = 1
         html = ''
         print(url)
         while html != False:
             html = all_reviews_on_one_page(url , page_numb)
-            one_page_info = get_dick_from_html(html) 
+            one_page_info = get_dick_from_html(html , user_name) 
             html = add_to_datebase(one_page_info)
             page_numb += 1
-            print(page_numb)
+            print("страница" , page_numb)
             if html == None:
                 html == False
         
 # получаем словарь из hml
-def get_dick_from_html(html):
+def get_dick_from_html(html , user_name):
     if html != None:
-        one_page_info = information_in_html(html)
+        print('получаем словарь')
+        one_page_info = information_in_html(html , user_name)
         return one_page_info
     return False
 

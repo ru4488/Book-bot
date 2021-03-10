@@ -1,34 +1,42 @@
-import requests
+
 import random
 import time
-import json
-
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
-from get_html import get_HTML
 
-  # поиск названия книги
+
+  # поиск названия книги +
 def parse_book_name(review):
-    name_book = review.find("a" , class_="brow-book-name with-cycle").text
-    return name_book
+    book_name  = review.find("a" , class_="lists__book-title").text
 
+    return book_name.strip()
+    
+# поиск id книги +
 def parse_book_id(review):
-    book_info = review.find("a" , class_="brow-book-name with-cycle")
-    list_for_slash = (book_info['href']).split('/')
+    book_info = review.find("a" , class_ = "lists__book-title").get("href")
+    list_for_slash = book_info.split('/')
     book_id = (list_for_slash[2]).split('-')
     return book_id[0]
 
 
-# поиск автора
+# поиск автора +
 def parse_book_author(review):
-    author = review.find("a" , class_="brow-book-author")
-    if author is None:
-        return None
-    return author.text
+    all_author  = review.find_all("a" , class_="lists__author")
 
-# оценка пользователя
+    if len(all_author) > 1 :
+        all_autor_list = []
+        for one_autor in all_author:
+            if one_autor.get('title') not in all_autor_list:
+                all_autor_list.append(one_autor.get('title'))
+        return ', '.join(all_autor_list)
+
+    elif len(all_author) == 1:
+        return review.find("a" , class_="lists__author").get('title')
+
+
+# оценка пользователя +
 def parse_book_score(review):
-    score = review.find("span" , class_="brow-rating marg-right").text
+    score  = review.find("div" , class_="lists__rating").text
     return str(score)
 
 def user_name(review): #имя пользователя
@@ -38,36 +46,41 @@ def user_name(review): #имя пользователя
     a = a[0].split(' ')
     return a[1]
 
+# поиск URL  +
 def parse_url(review):
-    score = review.find("a" , class_="brow-book-name with-cycle").get('href')
-    #print('parse_url_score=',(score))
-    return str(score)
+    url  = review.find("a" , class_="lists__book-title").get('href')
+    return str(url)
 
 # есть ли информация на странице пользователя
-def information_in_html(html):
+def information_in_html(html , user_name):
     soup = BeautifulSoup(html , 'html.parser')
+    print(soup)
     stop_word = soup.find("div" , class_="with-pad")
     if stop_word == None:
         print(1)
-        return parse_books(soup)
+        return parse_books(soup , user_name)
     elif stop_word.text == 'Этот список пока пуст.':
         print(2)
         return False
     else:
         print(3)
-        return parse_books(soup)
+        return parse_books(soup , user_name)
 
 
 # создание массива из словарей
-def parse_books(soup):
+def parse_books(soup , user_name):
     all_about_book_list = []
+    review = soup.find_all('div' , class_="lists__wrapper")
+
+    # print(review)
+    
 
     print("мы тут if")
-    for review in soup.find_all("div" , class_="brow-data"):
+    for review in soup.find_all("div" , class_="lists__wrapper"):
 
         all_about_book_dir = {}
         all_about_book_dir['book_id'] = parse_book_id(review)
-        all_about_book_dir['user'] = user_name(soup)
+        all_about_book_dir['user'] = user_name
         all_about_book_dir['title'] = parse_book_name(review)
         all_about_book_dir['artist']  = parse_book_author(review)
         all_about_book_dir['score'] = parse_book_score(review)
@@ -75,7 +88,7 @@ def parse_books(soup):
 
         all_about_book_list.append(all_about_book_dir)
 
-    return all_about_book_list 
+    # print(all_about_book_list) 
 
 
     

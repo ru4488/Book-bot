@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
 
 
-'https://www.livelib.ru/reader/Tin-tinka/read'
+'https://www.livelib.ru/reader/Elena878/read'
     
 'https://www.livelib.ru/reader/IrinaLinkyavichene/read'
 'https://www.livelib.ru/reader/LushbaughPizzicato/read'

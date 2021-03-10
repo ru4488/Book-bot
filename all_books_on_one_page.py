@@ -15,7 +15,7 @@ def all_reviews_on_one_page(url , page_numb):
     }
     data = {
         'page_no': page_numb,
-        'per_page': 1000,
+        'per_page': 40,
         'is_new_design': "ll2019",
         'is_prev': "false"
     }
