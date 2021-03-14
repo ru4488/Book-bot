@@ -95,4 +95,4 @@ def parse_books(soup , user_name):
 if __name__ == "__main__":
     # url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
     # url = "https://www.livelib.ru/reader/VartanPopov/read"
-    information_in_html(html)
+    all_page_info(url)
