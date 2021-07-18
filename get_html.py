@@ -12,6 +12,11 @@ def get_HTML(url):
         jar = result.cookies
         return result.text
 
+
     except (requests.RequestException , ValueError):
         print('сетевая ошибка')
         return False
+        
+if __name__ == "__main__":
+    get_HTML(url)
+
