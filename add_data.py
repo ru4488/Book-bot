@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     store_books(all_info)
     # # """поиск пользователей по книгам Вартан"""
-    Reviewers_add_db(all_info)    
+    # Reviewers_add_db(all_info)    
 
 
 

@@ -43,42 +43,7 @@ def parse_url(review):
     #print('parse_url_score=',(score))
     return str(score)
 
-# есть ли информация на странице пользователя
-def information_in_html(url):
-    html = get_HTML(url)
-    if html:
-        soup = BeautifulSoup(html , 'html.parser')
-        return soup
 
-def stop_scrolling(soup):
-    stop_word = soup.find("div" , class_="with-pad")  
-    
-    if stop_word is None or stop_word.text != 'Этот список пока пуст.':
-        return True
-    elif stop_word.text == 'Этот список пока пуст.':
-        return False
-    else:
-        return True
-
-# создание списка со всеми оценками пользователя
-def all_page_rewiews(url):
-    counting = 1    
-    all_page = []  
-    keep_on = True
-    while keep_on: 
-        new_url = url + str(counting) 
-        print(new_url)
-        soup  = information_in_html(new_url)
-        keep_on = stop_scrolling(soup)
-        if keep_on:
-            one_page = parse_books(soup)
-            all_page.extend(one_page)
-        counting += 1 
-        rest = random.randint(3, 10)
-        time.sleep(rest)
-    print(len(all_page))
-    return all_page
-        
 
 # создание массива из словарей
 def parse_books(soup):
@@ -106,4 +71,4 @@ if __name__ == "__main__":
     # url = 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
     url = "https://www.livelib.ru/reader/VartanPopov/read"
     
-    information_in_html(url)
+    parse_books(soup)
