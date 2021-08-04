@@ -7,11 +7,19 @@ from sqlalchemy.orm.exc import NoResultFound
 
 
 def store_books(all_info):
-    
+    user = get_or_create_user(all_info[0]['user'])
+    review_list = []
     for row in all_info:
-        user = get_or_create_user(row['user'])
+        
         book = get_or_create_book(row)
-        create_or_not_review(book , user, row)
+        review_dict = create_or_not_review(book , user, row)
+        if review_dict:
+            review_list.append(review_dict)
+    add_all_rewiew(review_list)
+  
+def add_all_rewiew(review_list):
+    db_session.bulk_insert_mappings(Review, review_list)
+    db_session.commit()
 
 def get_or_create_user(username):
     user = User.query.filter(User.name == username).first()
@@ -45,14 +53,12 @@ def get_or_create_book(row):
 
 def create_or_not_review(book , user , row):
     if Review.query.filter(and_(Review.book_id == book.id , Review.user_id == user.id)).count() == 0:
-        review = Review(
-            user_id=user.id,
-            score=row['score'],
-            book_id=book.id
-            )
 
-        db_session.add(review)
-        db_session.commit()
+        review_dict = {"user_id" : user.id,
+            "score" : row['score'],
+            "book_id" : book.id
+        }
+        return review_dict
           
         
 

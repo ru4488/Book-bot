@@ -13,7 +13,7 @@ def how_much_books_in_db():
     counting = 0
     for row in users:
         added_books = Review.query.filter(Review.user_id == row.id).count()
-
+        print(row.id)
         if added_books < row.how_much_read:
             print(added_books , row.id)
             
@@ -25,6 +25,7 @@ def how_much_books_in_db():
 
             counting += 1
             print("counting = " ,  counting)
+
 
 
 #создаем str url   
