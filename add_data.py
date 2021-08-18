@@ -1,6 +1,6 @@
 from db import db_session
-from models import User, Review, Book
-from my_page_book import all_page_info
+from models import User, Review, Book, Used_User
+from my_page_book import all_page_info , how_many_books
 from  func_cicle  import  func_add_bc
 
 from sqlalchemy import Column, Integer, String, and_
@@ -15,18 +15,25 @@ def store_books(all_info):
 
 
 
+
 def get_or_create_user(username):
     user = User.query.filter(User.name == username).first()
     if not user:
-        user = User(name = username)
+        user = User(
+            name = username
+         )
+
         db_session.add(user)
         db_session.commit()
     return user
+  
+
 def  Reviewers_add_db(all_info):
     for row in all_info:
 
-        a=str(row['Url'])
+        a = str(row['Url'])
         func_add_bc(a)
+
 def get_or_create_book(row):
     book = Book.query.filter(Book.livelib_id == row['book_id']).first()
     if not book:
@@ -49,16 +56,22 @@ def create_or_not_review(book , user , row):
 
         db_session.add(review)
         db_session.commit()
-
-
+          
+        
 
 if __name__ == "__main__":
-    url = 'https://www.livelib.ru/reader/NatalyaMayak/read'
-    all_info = all_page_info(url)
+    url = "https://www.livelib.ru/reader/LushbaughPizzicato/read"
+    all_info , books_read = all_page_info(url)
     store_books(all_info)
-    Reviewers_add_db(all_info)
-#
-# 'https://www.livelib.ru/reader/LushbaughPizzicato/read'
+    # # """поиск пользователей по книгам Вартан"""
+    Reviewers_add_db(all_info)    
+
+
+
+'https://www.livelib.ru/reader/Elena878/read'
+    
+'https://www.livelib.ru/reader/IrinaLinkyavichene/read'
+'https://www.livelib.ru/reader/LushbaughPizzicato/read'
 'https://www.livelib.ru/reader/livjuly/read'
 "https://www.livelib.ru/reader/VartanPopov/read"
 

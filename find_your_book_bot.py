@@ -1,8 +1,12 @@
 import logging
 import settings
 from telegram.ext import Updater , CommandHandler , MessageHandler, Filters
-
+from add_user_from_bot import new_user_from_bot
+from get_data import best_book_for_you
+from models import User
+import random
 logging.basicConfig(filename='bot.log', level=logging.INFO)
+
 
 def start(update, context):
     if 'id' in context.user_data:
@@ -16,16 +20,35 @@ def user_name_livelib(update, context):
 
     if "www.livelib.ru" in user_page:
         if ('https:' in user_page) and ('reader' in user_page):
-            context.user_data['user_name'] = user_page[4]
-            update.message.reply_text(user_page[4])
-        elif 'reader' in user_page:
-            context.user_data['user_name'] = user_page[2]
-            update.message.reply_text(user_page[2])
-        else:
-            update.message.reply_text("Не могу тебя распознать. Убедись, что в ссылке есть твой никнейм")  
+            user_name = user_page[4]
+            
+        elif 'reader' in user_page: 
+            user_name = user_page[2]    
+            
+        context.user_data['user_name'] = user_name
+        old_user = User.query.filter(User.name == user_name).first()
+        if old_user == None:
+            update.message.reply_text('Я пока о тебе ничего не знаю, придется немного подождать ....')
+            new_user_from_bot(user_name)
+            answer = best_book_for_you(user_name)
+            your_five_book(update , answer)
+            print("Выдал")
+        else : 
+            answer = best_book_for_you(user_name)
+            your_five_book(update , answer)
     else:
         update.message.reply_text("Что то пошло не так. Видимо не тот сайт")
+        print("Выдал")
 
+def your_five_book(update , answer):
+    x = 0
+    leght_list = len(answer)
+    while x < leght_list:
+        x += 1
+        random_numb = random.randint(0 , leght_list)
+        update.message.reply_text(answer[random_numb])
+        if x == 5:
+            x = leght_list 
 
 def main():
     mybot = Updater(settings.API_KEY, use_context=True)
